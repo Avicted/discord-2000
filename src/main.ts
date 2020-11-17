@@ -9,9 +9,6 @@ client.commands = new Discord.Collection()
 const commandFiles = fs.readdirSync('dist/commands').filter(file => file.endsWith('.js'))
 
 async function loadCommandFiles(): Promise<any> {
-    console.log('loadCommandFiles...')
-    console.log(commandFiles.length)
-
     for (const file of commandFiles) {
         try {
             const command: ICommand = await require(`./commands/${file}`)
@@ -28,14 +25,24 @@ loadCommandFiles()
 
 client.on('ready', () => {
     console.log(`Logged in as ${client?.user?.tag}! cmdPrefix: ${prefix}`)
+    console.log(`------------------------ Commands ------------------------`)
     console.log(client.commands)
+    console.log(`----------------------------------------------------------`)
 })
 
 client.on('message', (message: Message) => {
     if (!message.content.startsWith(prefix) || message.author.bot) return
 
     const args: string[] = message.content.slice(prefix.length).trim().split(/ +/)
-    const command: string | undefined = args.shift()?.toLowerCase()
+    const userCommand: string | undefined = args.shift()?.toLowerCase()
+
+    console.log(`The user: ${message.author.username} entered command: ${userCommand}`)
+
+    // Is the command provided by the user a registered command?
+    const selectedCommand = [...client.commands.values()].filter((command: ICommand) => command.name === userCommand)
+    if (selectedCommand.length < 1) return;
+
+    selectedCommand[0].execute(message)
 })
 
 client.login(process.env.token)
