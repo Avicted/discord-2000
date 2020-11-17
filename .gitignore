@@ -1,0 +1,9 @@
+# Environment secrets
+.env
+
+# Ignore node_modules libraries
+node_modules/
+
+# Generated code
+dist/
+coverage/
