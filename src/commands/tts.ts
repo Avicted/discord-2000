@@ -32,6 +32,11 @@ module.exports = class TTS implements ICommand {
         }
 
         const text: string = args.join(' ')
+        console.log({
+            info: 'TTS execute',
+            text,
+        })
+
         const rawAudioData = await text2wav(`${text}`, {
             // voice: 'en+whisper',
             punct: '"',

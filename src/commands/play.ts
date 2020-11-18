@@ -44,6 +44,12 @@ module.exports = class Play implements ICommand {
         if (!message.guild) return;
 
         const args: string[] = message.content.slice(prefix.length).trim().split(/ +/)
+
+        if (args.length < 2) {
+            message.reply('Please enter a audio clip as the parameter');
+            return
+        }
+
         const fileName: string = args[1].toLowerCase()
 
         if (message.member?.voice.channel) {
@@ -70,7 +76,7 @@ module.exports = class Play implements ICommand {
     private playLocalFile(connection: VoiceConnection): void {
         console.log(this._audioQueue._store[0])
         const fileName: string = this._audioQueue._store[0]
-        const dispatcher: StreamDispatcher = connection.play(fs.createReadStream(`src/media/${fileName}.ogg`), {
+        const dispatcher: StreamDispatcher = connection.play(fs.createReadStream(`media/${fileName}.ogg`), {
             volume: 0.5,
         })
 
