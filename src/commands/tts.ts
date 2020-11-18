@@ -43,8 +43,8 @@ module.exports = class TTS implements ICommand {
         const rawAudioData = await text2wav(`${text}`, {
             // voice: 'en+whisper',
             punct: '"',
-            speed: 30,
-            pitch: 50,
+            speed: 60,
+            pitch: 80,
             voice: 'fi',
         })
 
@@ -80,16 +80,16 @@ module.exports = class TTS implements ICommand {
         return new Promise((resolve, rejects) => {
             ffmpeg()
                 .input(`${this._ttsOutputWavFile}_${messageCreatedTimeStamp}`)
-                .input(`tts_temp_audio/five_colums.wav`)
+                // .input(`tts_temp_audio/five_colums.wav`)
                 // '[0] [1] afir=dry=10:wet=10'
-                .complexFilter([
+                /* .complexFilter([
                     {
-                        filter: "afir=dry=10:wet=7",
+                        filter: "afir=dry=10:wet=4",
                         // options: { dry: 10, wet: 10 },
                         // inputs: "0:1",
                         outputs: "output",
                     },
-                ], 'output')
+                ], 'output') */
                 .noVideo()
                 .audioFrequency(48000)
                 .audioChannels(2)
@@ -111,21 +111,21 @@ module.exports = class TTS implements ICommand {
 
                     resolve(true)
                 })
-                .save(`${this._ttsOutputMP3File}_${messageCreatedTimeStamp}`)
+                .save(`${messageCreatedTimeStamp}_${this._ttsOutputMP3File}`)
         })
     }
 
     private playTTSFile(connection: VoiceConnection, messageCreatedTimeStamp: number): void {
         console.log('playTTSFile')
 
-        const dispatcher: StreamDispatcher = connection.play(fs.createReadStream(`${this._ttsOutputMP3File}_${messageCreatedTimeStamp}`), {
-            volume: 0.4,
+        const dispatcher: StreamDispatcher = connection.play(fs.createReadStream(`${messageCreatedTimeStamp}_${this._ttsOutputMP3File}`), {
+            volume: 0.8,
         })
 
         dispatcher.on('finish', (): void => {
             // remove the mp3 file
             try {
-                fs.unlinkSync(`${this._ttsOutputMP3File}_${messageCreatedTimeStamp}`,)
+                fs.unlinkSync(`${messageCreatedTimeStamp}_${this._ttsOutputMP3File}`,)
             } catch (err) {
                 console.error(err)
             }

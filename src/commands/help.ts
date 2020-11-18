@@ -1,6 +1,7 @@
 import { Message } from "discord.js";
 import { ICommand } from "../interfaces/command";
 import { clientCommands } from "../main";
+import fs from 'fs'
 
 module.exports = class Help implements ICommand {
     _name: string = 'help'
@@ -22,6 +23,16 @@ module.exports = class Help implements ICommand {
             info += `:white_small_square: ${command.name} -  ${command.description}\n`
         });
 
-        message.channel.send(info);
+        // List all local audio files
+        fs.readdir('./media/', (err: any, files: string[]) => {
+            info += `\n**Audio commands**\n`;
+
+            files.forEach(file => {
+                const fileName: string = file.substr(0, file.length - 4);
+                info += `:white_small_square: ${fileName}\n`;
+            });
+
+            message.channel.send(info);
+        });
     }
 }

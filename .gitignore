@@ -12,3 +12,4 @@ coverage/
 media
 tts_temp_audio/*.wav
 tts_temp_audio/*.ogg
+tts_temp_audio/*.mp3

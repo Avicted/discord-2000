@@ -13,3 +13,7 @@ Start typescript in watch mode, recompile and restart nodejs on file changes:
 
 ### Media
 Place .ogg audio files in the media directory
+These files can be played back in a voice channel with the command:
+```!play <file_name>```
+
+The .ogg audio files are automatically listed in the ```!help``` command.
