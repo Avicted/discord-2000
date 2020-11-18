@@ -1,11 +1,15 @@
 import fs from 'fs'
 import { Message } from 'discord.js'
 import { createCommand, ICommand, ICommandConstructor } from './interfaces/command'
+import { Queue } from './queue'
 const Discord = require('discord.js')
 
 const client = new Discord.Client()
 const prefix = process.env.cmdPrefix as string
-client.commands = new Discord.Collection()
+export const clientCommands = new Discord.Collection()
+// Create a global queue for storing audio sources
+export const audioQueue: Queue<string> = new Queue()
+
 const commandFiles = fs.readdirSync('dist/commands').filter(file => file.endsWith('.js'))
 
 async function loadCommandFiles(): Promise<any> {
@@ -13,7 +17,7 @@ async function loadCommandFiles(): Promise<any> {
         try {
             const command: ICommand = await require(`./commands/${file}`)
             const newCommand = createCommand(command as unknown as ICommandConstructor, command.name, command.description)
-            client.commands.set(newCommand.name, newCommand)
+            clientCommands.set(newCommand.name, newCommand)
         } catch (error) {
             console.error(error)
         }
@@ -26,7 +30,7 @@ loadCommandFiles()
 client.on('ready', () => {
     console.log(`Logged in as ${client?.user?.tag}! cmdPrefix: ${prefix}`)
     console.log(`------------------------ Commands ------------------------`)
-    console.log(client.commands)
+    console.log(clientCommands)
     console.log(`----------------------------------------------------------`)
 })
 
@@ -39,7 +43,7 @@ client.on('message', (message: Message) => {
     console.log(`The user: ${message.author.username} entered command: ${userCommand}`)
 
     // Is the command provided by the user a registered command?
-    const selectedCommand = [...client.commands.values()].filter((command: ICommand) => command.name === userCommand)
+    const selectedCommand = [...clientCommands.values()].filter((command: ICommand) => command.name === userCommand)
     if (selectedCommand.length < 1) return;
 
     selectedCommand[0].execute(message)

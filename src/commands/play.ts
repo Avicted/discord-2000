@@ -1,30 +1,14 @@
 import fs from 'fs'
 import { Message, StreamDispatcher, VoiceConnection } from "discord.js";
 import { ICommand } from "../interfaces/command";
+import { Queue } from '../queue';
+import { audioQueue } from '../main';
 const prefix = process.env.cmdPrefix as string
-
-class Queue<T> {
-    _store: T[] = []
-
-    push(val: T) {
-        this._store.push(val)
-    }
-
-    pop(): T | undefined {
-        return this._store.shift()
-    }
-
-    length(): number {
-        return this._store.length
-    }
-}
 
 module.exports = class Play implements ICommand {
     _name: string = 'play'
     _description: string = 'Plays a stored audio file'
-
-    // @TODO: this should be global queue
-    _audioQueue: Queue<string> = new Queue()
+    _audioQueue: Queue<string> = audioQueue
 
     get name(): string {
         return this._name
@@ -32,10 +16,6 @@ module.exports = class Play implements ICommand {
 
     get description(): string {
         return this._description
-    }
-
-    get audioQueue(): Queue<string> {
-        return this._audioQueue
     }
 
     public async execute(message: Message) {
