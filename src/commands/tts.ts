@@ -78,7 +78,18 @@ module.exports = class TTS implements ICommand {
 
     private async convertWavBytesToOpus(rawAudioData: Uint8Array, messageCreatedTimeStamp: number): Promise<boolean> {
         return new Promise((resolve, rejects) => {
-            ffmpeg(`${this._ttsOutputWavFile}_${messageCreatedTimeStamp}`)
+            ffmpeg()
+                .input(`${this._ttsOutputWavFile}_${messageCreatedTimeStamp}`)
+                .input(`tts_temp_audio/five_colums.wav`)
+                // '[0] [1] afir=dry=10:wet=10'
+                .complexFilter([
+                    {
+                        filter: "afir=dry=10:wet=7",
+                        // options: { dry: 10, wet: 10 },
+                        // inputs: "0:1",
+                        outputs: "output",
+                    },
+                ], 'output')
                 .noVideo()
                 .audioFrequency(48000)
                 .audioChannels(2)
@@ -108,7 +119,7 @@ module.exports = class TTS implements ICommand {
         console.log('playTTSFile')
 
         const dispatcher: StreamDispatcher = connection.play(fs.createReadStream(`${this._ttsOutputMP3File}_${messageCreatedTimeStamp}`), {
-            volume: 0.9,
+            volume: 0.4,
         })
 
         dispatcher.on('finish', (): void => {
