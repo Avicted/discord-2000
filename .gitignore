@@ -10,3 +10,5 @@ coverage/
 
 # Sound files .ogg
 media
+tts_temp_audio/*.wav
+tts_temp_audio/*.ogg

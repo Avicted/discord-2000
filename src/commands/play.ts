@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { Message, VoiceConnection } from "discord.js";
+import { Message, StreamDispatcher, VoiceConnection } from "discord.js";
 import { ICommand } from "../interfaces/command";
 const prefix = process.env.cmdPrefix as string
 
@@ -7,11 +7,11 @@ class Queue<T> {
     _store: T[] = []
 
     push(val: T) {
-      this._store.push(val)
+        this._store.push(val)
     }
 
     pop(): T | undefined {
-      return this._store.shift()
+        return this._store.shift()
     }
 
     length(): number {
@@ -22,6 +22,8 @@ class Queue<T> {
 module.exports = class Play implements ICommand {
     _name: string = 'play'
     _description: string = 'Plays a stored audio file'
+
+    // @TODO: this should be global queue
     _audioQueue: Queue<string> = new Queue()
 
     get name(): string {
@@ -46,7 +48,7 @@ module.exports = class Play implements ICommand {
 
         if (message.member?.voice.channel) {
             const connection: VoiceConnection = await message.member.voice.channel.join();
-            
+
             // We assume that the file name exists
             this._audioQueue.push(fileName)
             console.log(`this._audioQueue`)
@@ -68,7 +70,7 @@ module.exports = class Play implements ICommand {
     private playLocalFile(connection: VoiceConnection): void {
         console.log(this._audioQueue._store[0])
         const fileName: string = this._audioQueue._store[0]
-        const dispatcher = connection.play(fs.createReadStream(`dist/media/${fileName}.ogg`), {
+        const dispatcher: StreamDispatcher = connection.play(fs.createReadStream(`src/media/${fileName}.ogg`), {
             volume: 0.5,
         })
 

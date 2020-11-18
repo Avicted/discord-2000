@@ -9,3 +9,7 @@ Develop inside a remote docker container in VSCode.
 Start typescript in watch mode, recompile and restart nodejs on file changes:
 
 `npm run dev`
+
+
+### Media
+Place .ogg audio files in the media directory
