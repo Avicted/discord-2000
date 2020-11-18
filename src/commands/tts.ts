@@ -80,6 +80,7 @@ module.exports = class TTS implements ICommand {
         return new Promise((resolve, rejects) => {
             ffmpeg()
                 .input(`${this._ttsOutputWavFile}_${messageCreatedTimeStamp}`)
+                // @Note: reverb test
                 // .input(`tts_temp_audio/five_colums.wav`)
                 // '[0] [1] afir=dry=10:wet=10'
                 /* .complexFilter([
