@@ -5,9 +5,10 @@ export interface ICommand {
     name: string;
     description: string;
 
-    execute: (message: Message) => any;
+    execute: (message: Message) => void;
 }
 
+// Helpers used in main
 export interface ICommandConstructor {
     new (name: string, description: string): ICommand;
 }
