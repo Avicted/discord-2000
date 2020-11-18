@@ -20,14 +20,23 @@ module.exports = class TTS implements ICommand {
     }
 
     public async execute(message: Message) {
-        const args: string[] = message.content.slice(prefix.length).trim().split(/ +/)
-        const text: string = args.join(' ')
+        let args: string[] = message.content.slice(prefix.length).trim().split(/ +/)
+        console.log({
+            args
+        })
 
+        if (args.length > 1) {
+            args.shift()
+        } else if (args.length === 1) {
+            args = ['Please provide text to the text to speech command']
+        }
+
+        const text: string = args.join(' ')
         const rawAudioData = await text2wav(`${text}`, {
             // voice: 'en+whisper',
             punct: '"',
             speed: 50,
-            voice: 'en',
+            voice: 'fi',
         })
 
         fs.writeFileSync(this._ttsOutputWavFile, rawAudioData)
