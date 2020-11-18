@@ -44,6 +44,7 @@ module.exports = class TTS implements ICommand {
             // voice: 'en+whisper',
             punct: '"',
             speed: 30,
+            pitch: 50,
             voice: 'fi',
         })
 
