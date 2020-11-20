@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { Message, StreamDispatcher, VoiceConnection } from "discord.js";
+import { Message, StreamDispatcher, VoiceChannel, VoiceConnection } from "discord.js";
 import { ICommand } from "../interfaces/command";
 import { Queue } from '../queue';
 import { audioQueue } from '../main';
@@ -8,7 +8,7 @@ const prefix = process.env.cmdPrefix as string
 module.exports = class Play implements ICommand {
     _name: string = 'play'
     _description: string = 'Plays a stored audio file'
-    _audioQueue: Queue<string> = audioQueue
+    _audioQueue: Queue<Map<string, VoiceChannel>> = audioQueue
 
     get name(): string {
         return this._name
@@ -33,46 +33,24 @@ module.exports = class Play implements ICommand {
         const fileName: string = args[1].toLowerCase()
 
         if (message.member?.voice.channel) {
-            const connection: VoiceConnection = await message.member.voice.channel.join();
+            const voiceChannel: VoiceChannel = message.member.voice.channel
 
-            // We assume that the file name exists
-            this._audioQueue.push(fileName)
-            console.log(`this._audioQueue`)
-            console.log({
-                _audioQueue: this._audioQueue,
-                length: this._audioQueue.length(),
-            })
-
-            message.channel.send(`Now playing... ${fileName}`)
-
-            if (this._audioQueue.length() <= 1) {
-                this.playLocalFile(connection)
+            // Check if the file exists?
+            try {
+                if (fs.existsSync(`media/${fileName}.ogg`)) {
+                    // file exists
+                }
+            } catch (err) {
+                console.error(err)
+                message.reply(`The file: ${fileName} does not exist`)
+                return
             }
+
+            const queueEntry: Map<string, VoiceChannel> = new Map()
+            this._audioQueue.push(queueEntry.set(fileName, voiceChannel))
+            message.channel.send(`Now playing... ${fileName}`)
         } else {
             message.reply('You need to join a voice channel first!');
         }
-    }
-
-    private playLocalFile(connection: VoiceConnection): void {
-        console.log(this._audioQueue._store[0])
-        const fileName: string = this._audioQueue._store[0]
-        const dispatcher: StreamDispatcher = connection.play(fs.createReadStream(`media/${fileName}.ogg`), {
-            volume: 0.5,
-        })
-
-        dispatcher.on('finish', (): void => {
-            this._audioQueue.pop()
-            if (this._audioQueue.length() < 1) {
-                dispatcher.destroy() // end the stream
-            } else {
-                this.playLocalFile(connection)
-            }
-            console.log(`Finished playing: ${fileName}`)
-        })
-    }
-
-    // @TODO: implement
-    private playYoutubeAudio(searchQuery: string): void {
-
     }
 }

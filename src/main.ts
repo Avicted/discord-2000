@@ -1,14 +1,18 @@
 import fs from 'fs'
-import { Message } from 'discord.js'
+import { Message, VoiceChannel } from 'discord.js'
 import { createCommand, ICommand, ICommandConstructor } from './interfaces/command'
 import { Queue } from './queue'
+import { AudioDispatcher } from './audioDispatcher'
 const Discord = require('discord.js')
 
 const client = new Discord.Client()
 const prefix = process.env.cmdPrefix as string
 export const clientCommands = new Discord.Collection()
-// Create a global queue for storing audio sources
-export const audioQueue: Queue<string> = new Queue()
+// Global queue for storing audio sources
+export const audioQueue: Queue<Map<string, VoiceChannel>> = new Queue()
+// Global audio dispatcher for playing audio from the audioQueue
+export const audioDispatcher: AudioDispatcher = new AudioDispatcher()
+audioDispatcher.initialize()
 
 const commandFiles = fs.readdirSync('dist/commands').filter(file => file.endsWith('.js'))
 
@@ -48,7 +52,5 @@ client.on('message', (message: Message) => {
 
     selectedCommand[0].execute(message)
 })
-
-console.log(process.env)
 
 client.login(process.env.token)

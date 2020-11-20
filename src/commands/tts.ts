@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { Message, StreamDispatcher, VoiceConnection } from "discord.js";
+import { Message, StreamDispatcher, VoiceChannel, VoiceConnection } from "discord.js";
 import { ICommand } from "../interfaces/command"
 const prefix = process.env.cmdPrefix as string
 const ffmpeg = require('fluent-ffmpeg')
@@ -13,7 +13,7 @@ import { audioQueue } from '../main';
 module.exports = class TTS implements ICommand {
     _name: string = 'tts'
     _description: string = 'Uses espeak to generate audio'
-    _audioQueue: Queue<string> = audioQueue
+    _audioQueue: Queue<Map<string, VoiceChannel>> = audioQueue
     _ttsOutputWavFile: string = 'tts_temp_audio/tts_temp_raw'
     _ttsOutputMP3File: string = 'tts_temp_audio/tts_temp'
 
@@ -60,20 +60,11 @@ module.exports = class TTS implements ICommand {
         if (!message.guild) return;
 
         if (message.member?.voice.channel) {
-            const connection: VoiceConnection = await message.member.voice.channel.join();
-
+            const voiceChannel: VoiceChannel = message.member.voice.channel
             await this.convertWavBytesToOpus(rawAudioData, message.createdTimestamp)
-            this._audioQueue.push(`${this._ttsOutputMP3File}_${message.createdTimestamp}.mp3`)
 
-            console.log(`this._audioQueue`)
-            console.log({
-                _audioQueue: this._audioQueue,
-                length: this._audioQueue.length(),
-            })
-
-            if (this._audioQueue.length() <= 1) {
-                this.playTTSFile(connection, message.createdTimestamp)
-            }
+            const queueEntry: Map<string, VoiceChannel> = new Map()
+            this._audioQueue.push(queueEntry.set(`${this._ttsOutputMP3File}_${message.createdTimestamp}.mp3`, voiceChannel))
         } else {
             message.reply('You need to join a voice channel first!');
         }
@@ -116,33 +107,6 @@ module.exports = class TTS implements ICommand {
                     resolve(true)
                 })
                 .save(`${this._ttsOutputMP3File}_${messageCreatedTimeStamp}.mp3`)
-        })
-    }
-
-    private playTTSFile(connection: VoiceConnection, messageCreatedTimeStamp: number): void {
-        console.log('playTTSFile')
-
-        const dispatcher: StreamDispatcher = connection.play(fs.createReadStream(`${this._ttsOutputMP3File}_${messageCreatedTimeStamp}.mp3`), {
-            volume: 0.8,
-        })
-
-        dispatcher.on('finish', (): void => {
-            this._audioQueue.pop()
-
-            // remove the mp3 file
-            try {
-                fs.unlinkSync(`${this._ttsOutputMP3File}_${messageCreatedTimeStamp}.mp3`,)
-            } catch (err) {
-                console.error(err)
-            }
-
-            if (this._audioQueue.length() < 1) {
-                dispatcher.destroy() // end the stream
-            } else {
-
-            }
-
-            console.log(`Finished playing: ${this._ttsOutputMP3File}_${messageCreatedTimeStamp}.mp3`)
         })
     }
 }
