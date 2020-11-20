@@ -49,4 +49,6 @@ client.on('message', (message: Message) => {
     selectedCommand[0].execute(message)
 })
 
+console.log(process.env)
+
 client.login(process.env.token)

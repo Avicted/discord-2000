@@ -25,6 +25,6 @@
     "dev": "tsc-watch --onSuccess \"npm run start\"",
     "start": "npm run compile && node dist/main.js"
   },
-  "author": "Avic",
-  "license": "ISC"
+  "author": "Victor Anderssén",
+  "license": "MIT"
 }
