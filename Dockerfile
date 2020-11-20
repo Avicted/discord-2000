@@ -1,9 +1,11 @@
 # production environment image
-FROM node:15.2.1 as production
+FROM node:14.15-buster as production
 
 # update the OS & install ffmpeg
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends ffmpeg
+
+RUN npm install -g typescript
 
 # set the working directory inside the image
 WORKDIR /app
