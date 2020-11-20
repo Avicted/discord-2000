@@ -21,6 +21,3 @@ RUN npm install
 
 # copy all source code to the working directory
 COPY . ./
-
-# run the start script in package.json
-RUN npm run start
