@@ -18,8 +18,9 @@ ARG cmdPrefix
 COPY package.json ./
 COPY package-lock.json ./
 
-# install dependencies
-RUN npm install
 
 # copy all source code to the working directory
 COPY . ./
+
+# install dependencies
+RUN npm install
