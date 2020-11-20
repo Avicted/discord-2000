@@ -39,10 +39,12 @@ module.exports = class Play implements ICommand {
             try {
                 if (fs.existsSync(`media/${fileName}.ogg`)) {
                     // file exists
+                } else {
+                    message.reply(`Play Command: The file: ${fileName} does not exist`)
+                    return
                 }
             } catch (err) {
                 console.error(err)
-                message.reply(`The file: ${fileName} does not exist`)
                 return
             }
 

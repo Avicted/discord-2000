@@ -15,17 +15,15 @@ export class AudioDispatcher {
     }
 
     private loopAndCheckForQueueEntries(): void {
-        if (!this.isPlayingAudio && this._audioQueue.length() >= 1) {
+        if (!this._playingAudio && this._audioQueue.length() >= 1) {
             this.play()
         }
     }
 
-    public get isPlayingAudio(): boolean {
-        return this._playingAudio
-    }
-
     public async play(): Promise<void> {
         console.log(`AudioDispatcher: play()`)
+        console.log(`queue`)
+        console.log(this._audioQueue)
 
         // Does the queue have any entries?
         if (this._audioQueue.length() < 1) {
@@ -48,6 +46,19 @@ export class AudioDispatcher {
         // Is the file a local audio file or a temporary text to speech audio file?
         const isTTSFile: boolean = fileName.startsWith('tts_temp_audio')
         const filePath: string = isTTSFile === true ? `${fileName}` : `media/${fileName}.ogg`
+
+        // Does the audio file exist?
+        try {
+            if (fs.existsSync(`${filePath}`)) {
+                // file exists
+            } else {
+                console.log(`AudioDispatcher: The file ${fileName} does not exist`)
+            }
+        } catch (err) {
+            console.error(err)
+            return
+        }
+
 
         const dispatcher: StreamDispatcher = connection.play(fs.createReadStream(filePath), {
             volume: 0.7,
