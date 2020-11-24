@@ -1,14 +1,11 @@
 import fs from 'fs'
-import { Message, StreamDispatcher, VoiceChannel, VoiceConnection } from "discord.js";
+import { Message, VoiceChannel } from "discord.js";
 import { ICommand } from "../interfaces/command"
 const prefix = process.env.cmdPrefix as string
 const ffmpeg = require('fluent-ffmpeg')
 import text2wav = require('text2wav')
 import { Queue } from '../queue';
 import { audioQueue } from '../main';
-
-// @TODO: TTS does not work in the production environment
-// Cannot process audio: ffmpeg exited with code 1: 1605811069971_tts_temp_audio/tts_temp.mp3: No such file or directory
 
 module.exports = class TTS implements ICommand {
     _name: string = 'tts'
@@ -75,7 +72,7 @@ module.exports = class TTS implements ICommand {
             ffmpeg()
                 .input(`${this._ttsOutputWavFile}_${messageCreatedTimeStamp}.wav`)
                 // @Note: reverb test
-                // .input(`tts_temp_audio/five_colums.wav`)
+                // .input(`tts_temp_audio/five_colums.wav`) // requires a impulse response audio file
                 // '[0] [1] afir=dry=10:wet=10'
                 /* .complexFilter([
                     {
