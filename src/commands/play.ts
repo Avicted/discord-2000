@@ -50,7 +50,6 @@ module.exports = class Play implements ICommand {
 
             const queueEntry: Map<string, VoiceChannel> = new Map()
             this._audioQueue.push(queueEntry.set(fileName, voiceChannel))
-            message.channel.send(`Now playing... ${fileName}`)
         } else {
             message.reply('You need to join a voice channel first!');
         }
