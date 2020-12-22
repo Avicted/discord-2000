@@ -105,9 +105,6 @@ client.on('voiceStateUpdate', async (oldState: VoiceState, newState: VoiceState)
     else if (oldChannelId !== newChannelId) {
         textChannelMessage = `${username} moved to ${newChannelName} at ${timestamp}`
     }
-    else {
-        textChannelMessage = `We have no idea what happened to ${username} at ${timestamp}`
-    }
 
     console.log(textChannelMessage)
 
