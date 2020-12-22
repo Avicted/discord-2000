@@ -6,6 +6,8 @@
   "dependencies": {
     "@discordjs/opus": "^0.3.3",
     "@types/fluent-ffmpeg": "^2.1.16",
+    "date-fns": "^2.16.1",
+    "date-fns-tz": "^1.0.12",
     "discord.js": "^12.4.1",
     "ffmpeg-static": "^4.2.7",
     "fluent-ffmpeg": "^2.1.2",

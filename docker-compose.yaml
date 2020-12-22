@@ -20,6 +20,9 @@ services:
     environment:
       - token=${token}
       - cmdPrefix=${cmdPrefix}
+      - presence_text_channel_updates=${presence_text_channel_updates}
+      - enable_presence_updates=${enable_presence_updates}
+      - timezone=${timezone}
       - NODE_ENV=production
   
     restart: always

@@ -22,8 +22,6 @@ export class AudioDispatcher {
 
     public async play(): Promise<void> {
         console.log(`AudioDispatcher: play()`)
-        console.log(`queue`)
-        console.log(this._audioQueue)
 
         // Does the queue have any entries?
         if (this._audioQueue.length() < 1) {
@@ -32,7 +30,6 @@ export class AudioDispatcher {
 
         this._playingAudio = true
 
-        console.log(this._audioQueue._store[0])
         const fileName: string = this._audioQueue._store[0].keys().next().value
         const voiceChannel: VoiceChannel | undefined = this._audioQueue._store[0].get(fileName)
 
