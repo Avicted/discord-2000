@@ -9,13 +9,18 @@ RUN npm install -g typescript
 
 # set the working directory inside the image
 WORKDIR /app
+ENV PATH /app/node_modules/.bin:$PATH
 
 # Arguments passed from .env -> docker-compose.yaml -> Dockerfile
 ARG token
 ARG cmdPrefix
+ARG enable_presence_updates
+ARG presence_text_channel_updates
+ARG timezone
 
 # copy the list of dependencies to the working directory
 COPY package.json ./
+COPY package-lock.json ./
 
 # copy all source code to the working directory
 COPY . ./
