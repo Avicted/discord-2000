@@ -8,9 +8,6 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 # set the working directory inside the image
 WORKDIR /app
 
-ENV PATH /app/node_modules/.bin:$PATH
-RUN npm install -g typescript
-
 # Arguments passed from .env -> docker-compose.yaml -> Dockerfile
 ARG token
 ARG cmdPrefix
@@ -26,4 +23,4 @@ COPY package-lock.json ./
 COPY . ./
 
 # install dependencies
-RUN npm ci --only=production
+RUN npm install
