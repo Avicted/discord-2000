@@ -16,7 +16,6 @@ ARG cmdPrefix
 
 # copy the list of dependencies to the working directory
 COPY package.json ./
-COPY package-lock.json ./
 
 # copy all source code to the working directory
 COPY . ./
