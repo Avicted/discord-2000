@@ -77,7 +77,13 @@ client.on('voiceStateUpdate', async (oldState: VoiceState, newState: VoiceState)
     let textChannelMessage: string = ''
 
     // User that changed voice channel
-    const user: GuildMember | undefined = await oldState?.guild?.members.fetch(userId)
+    let user: GuildMember | undefined
+    try {
+        user = await oldState?.guild?.members.fetch(userId)
+    } catch (error) {
+        console.error(error)
+        return
+    }
 
     if (user === undefined) {
         console.error(`voiceStateUpdate: The user is undefined`)
@@ -108,7 +114,11 @@ client.on('voiceStateUpdate', async (oldState: VoiceState, newState: VoiceState)
 
     console.log(textChannelMessage)
 
-    // Send a logging message to the  presence_text_channel_updates
+    // Send a logging message to the presence_text_channel_updates
+    if (textChannelMessage.length <= 0) {
+        return
+    }
+
     client.channels.cache.get(presenceTextChannel).send(textChannelMessage);
 })
 
