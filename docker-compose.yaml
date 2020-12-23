@@ -1,35 +1,36 @@
 version: '3.7'
 services:
-  discord-2000:
-    container_name: "discord-2000"
-    user: node
+    discord-2000:
+        container_name: 'discord-2000'
+        user: node
 
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        - token=${token}
-        - cmdPrefix=${cmdPrefix}
-        - presence_text_channel_updates=${presence_text_channel_updates}
-        - enable_presence_updates=${enable_presence_updates}
-        - timezone=${timezone}
-        - NODE_ENV=production
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                - token=${token}
+                - cmdPrefix=${cmdPrefix}
+                - presence_text_channel_updates=${presence_text_channel_updates}
+                - enable_presence_updates=${enable_presence_updates}
+                - timezone=${timezone}
+                - NODE_ENV=production
 
-    network_mode: host
+        network_mode: host
 
-    volumes:
-      - .:/app:cached,Z
-  
-    environment:
-      - token=${token}
-      - cmdPrefix=${cmdPrefix}
-      - presence_text_channel_updates=${presence_text_channel_updates}
-      - enable_presence_updates=${enable_presence_updates}
-      - timezone=${timezone}
-      - NODE_ENV=production
-  
-    restart: always
-    command: npm run start
+        volumes:
+            - .:/app:cached,Z
+            - /app/node_modules,Z
+
+        environment:
+            - token=${token}
+            - cmdPrefix=${cmdPrefix}
+            - presence_text_channel_updates=${presence_text_channel_updates}
+            - enable_presence_updates=${enable_presence_updates}
+            - timezone=${timezone}
+            - NODE_ENV=production
+
+        restart: always
+        command: npm run start
 
 volumes:
-  discord-2000:
+    discord-2000:

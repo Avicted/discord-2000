@@ -22,8 +22,8 @@ ARG timezone
 COPY package.json ./
 COPY package-lock.json ./
 
-# install dependencies
-RUN npm ci --only=production
-
 # copy all source code to the working directory
 COPY . ./
+
+# install dependencies
+RUN npm ci --only=production
