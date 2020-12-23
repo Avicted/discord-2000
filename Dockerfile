@@ -26,4 +26,4 @@ COPY package-lock.json ./
 COPY . ./
 
 # install dependencies
-RUN npm install
+RUN npm ci --silent
