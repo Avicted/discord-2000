@@ -9,7 +9,5 @@ dist/
 coverage/
 
 # Sound files .ogg
-media
-tts_temp_audio/*.wav
-tts_temp_audio/*.ogg
-tts_temp_audio/*.mp3
+!media/.gitignore
+!tts_temp_audio/.gitignore
