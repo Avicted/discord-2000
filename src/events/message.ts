@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Message } from "discord.js";
 import { ICommand } from "../interfaces/command";
 import { IEvent } from "../interfaces/event";
 import { clientCommands } from "../main";

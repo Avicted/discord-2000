@@ -16,6 +16,13 @@ To create a new command:
 Create a new .ts file in src/commands. Create a class that implements the ICommand interface.
 The most basic example can be found in ```src/command/ping.ts```
 
+## New Events
+To create a new event:
+Create a new .ts file in src/events. Create a class that implements the IEvent interface.
+All events and their function parameters are available in the discord.js documentation. The most basic example can be found in ```src/events/ready.ts```
+
+The name of a typescript event file should match an event from discord.js. This is how the application knows which event you are implementing in a particular file.
+
 ## Media
 Place .ogg audio files in the media directory
 These files can be played back in a voice channel with the command:
