@@ -15,13 +15,8 @@ export const audioQueue: Queue<Map<string, VoiceChannel>> = new Queue()
 export const audioDispatcher: AudioDispatcher = new AudioDispatcher()
 audioDispatcher.initialize()
 
-// Should the bot post user presence updates to a predefined text channel?
 checkTimezoneSettings()
-
-// Bind all commands
 loadCommandFiles()
-
-// Bind all events
 loadEvents()
 
 client.login(process.env.token)
