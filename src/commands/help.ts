@@ -28,6 +28,12 @@ module.exports = class Help implements ICommand {
             info += `\n**Audio commands**\n`;
 
             files.forEach(file => {
+                const fileExtension: string = file.split('.')[1]
+                if (fileExtension !== '.ogg') {
+                    console.error(`The file ${file} is not an .ogg audio file.`)
+                    return
+                }
+
                 const fileName: string = file.substr(0, file.length - 4);
                 info += `:white_small_square: ${fileName}\n`;
             });
