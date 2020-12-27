@@ -7,7 +7,7 @@ const prefix = process.env.cmdPrefix as string
 
 module.exports = class MessageEvent implements IEvent {
     public execute(message: Message) {
-        if (message === undefined) return 
+        if (message === undefined) return
         if (!message.content.startsWith(prefix) || message.author.bot) return
 
         const args: string[] = message.content.slice(prefix.length).trim().split(/ +/)
@@ -18,6 +18,8 @@ module.exports = class MessageEvent implements IEvent {
         // Is the command provided by the user a registered command?
         const selectedCommand = [...clientCommands.values()].filter((command: ICommand) => command.name === userCommand)
         if (selectedCommand.length < 1) return;
+
+        console.log({ selectedCommand })
 
         selectedCommand[0].execute(message)
     }

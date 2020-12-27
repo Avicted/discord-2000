@@ -24,8 +24,9 @@
     },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "compile": "tsc",
-        "dev": "tsc-watch --onSuccess \"npm run start\"",
+        "cleanup": "rm -rf ./dist",
+        "compile": "npm run cleanup && tsc",
+        "dev": "npm run cleanup && tsc-watch --onSuccess \"npm run start\"",
         "start": "npm run compile && node dist/main.js"
     },
     "author": "Victor Anderssén",

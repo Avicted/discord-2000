@@ -19,17 +19,26 @@ module.exports = class Help implements ICommand {
     public execute(message: Message) {
         let info = "**COMMAND LIST**\n\n"
 
+        console.log(`Help command execute`)
+        console.log(message)
+
         this._clientCommands.forEach((command: ICommand) => {
             info += `:white_small_square: ${command.name} -  ${command.description}\n`
         });
 
         // List all local audio files
         fs.readdir('./media/', (err: any, files: string[]) => {
+            if (err) {
+                console.error(`Command Help: execute readdir`)
+                console.error(err)
+                return
+            }
+
             info += `\n**Audio commands**\n`;
 
             files.forEach(file => {
                 const fileExtension: string = file.split('.')[1]
-                if (fileExtension !== '.ogg') {
+                if (fileExtension !== 'ogg') {
                     console.error(`The file ${file} is not an .ogg audio file.`)
                     return
                 }

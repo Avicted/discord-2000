@@ -9,5 +9,8 @@ dist/
 coverage/
 
 # Sound files .ogg
-!media/.gitignore
-!tts_temp_audio/.gitignore
+media/.gitkeep
+media/
+
+tts_temp_audio/.gitkeep
+tts_temp_audio/
