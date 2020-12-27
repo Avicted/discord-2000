@@ -19,8 +19,6 @@ module.exports = class MessageEvent implements IEvent {
         const selectedCommand = [...clientCommands.values()].filter((command: ICommand) => command.name === userCommand)
         if (selectedCommand.length < 1) return;
 
-        console.log({ selectedCommand })
-
         selectedCommand[0].execute(message)
     }
 }

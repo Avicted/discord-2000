@@ -19,9 +19,6 @@ module.exports = class Help implements ICommand {
     public execute(message: Message) {
         let info = "**COMMAND LIST**\n\n"
 
-        console.log(`Help command execute`)
-        console.log(message)
-
         this._clientCommands.forEach((command: ICommand) => {
             info += `:white_small_square: ${command.name} -  ${command.description}\n`
         });
