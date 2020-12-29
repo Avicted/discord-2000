@@ -56,7 +56,7 @@ export async function loadEvents(): Promise<any> {
             console.log(`Event: ${file}`)
             const emitter = client; // Here we define our emitter. This is in our case the client (the bot)
             try {
-                emitter['on'](eventName, (...args: any) => newEvent.execute(...args)) // Run the event using the above defined emitter (client)
+                emitter['on'](eventName, async (...args: any) => await (async () => { newEvent.execute(...args) })()) // Run the event using the above defined emitter (client)
             } catch (error) {
                 console.error(error.stack); // If there is an error, console log the error stack message
             }

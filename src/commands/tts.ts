@@ -40,13 +40,23 @@ module.exports = class TTS implements ICommand {
             text,
         })
 
-        const rawAudioData = await text2wav(`${text}`, {
-            // voice: 'en+whisper',
-            punct: '"',
-            speed: 60,
-            pitch: 80,
-            voice: 'fi',
-        })
+        const rawAudioData: Uint8Array | undefined = await (async () => {
+            try {
+                return text2wav(`${text.replace('-', ' ')}`, {
+                    punct: '"',
+                    speed: 70,
+                    pitch: 99,
+                    voice: 'fi+iven',
+                })
+            } catch (error) {
+                return
+            }
+        })()
+
+        if (rawAudioData === undefined) {
+            console.error(`rawAudioData was undefined`)
+            return
+        }
 
         fs.writeFileSync(`${this._ttsOutputWavFile}_${message.createdTimestamp}.wav`, rawAudioData)
 
@@ -76,12 +86,18 @@ module.exports = class TTS implements ICommand {
                 // '[0] [1] afir=dry=10:wet=10'
                 /* .complexFilter([
                     {
-                        filter: "afir=dry=10:wet=4",
-                        // options: { dry: 10, wet: 10 },
+                        filter: "afir=dry=10:wet=1",
+                        // options: {  },
                         // inputs: "0:1",
                         outputs: "output",
                     },
                 ], 'output') */
+                .complexFilter([
+                    {
+                        filter: "volume=-5dB",
+                        outputs: "output",
+                    },
+                ], 'output')
                 .noVideo()
                 .audioFrequency(48000)
                 .audioChannels(2)

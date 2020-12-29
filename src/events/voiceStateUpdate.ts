@@ -56,6 +56,9 @@ module.exports = class VoiceStateUpdate implements IEvent {
         else if (oldChannelId !== newChannelId) {
             userAction = `moved to ${newChannelName}`
         }
+        else {
+            return
+        }
 
         if (presenceTextChannel === undefined) {
             return
