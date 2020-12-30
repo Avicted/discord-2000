@@ -3,7 +3,7 @@ FROM node:14.15-buster as production
 
 # update the OS & install ffmpeg
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends ffmpeg
+    && apt-get -y install --no-install-recommends ffmpeg postgresql-client
 
 # set the working directory inside the image
 WORKDIR /app
@@ -21,6 +21,8 @@ COPY package-lock.json ./
 
 # copy all source code to the working directory
 COPY . ./
+
+RUN sudo -u node npm install typeorm ts-node -g
 
 # install dependencies
 RUN npm install
