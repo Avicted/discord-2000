@@ -22,7 +22,7 @@ COPY package-lock.json ./
 # copy all source code to the working directory
 COPY . ./
 
-RUN sudo -u node npm install typeorm ts-node -g
+RUN npm install typeorm ts-node -g
 
 # install dependencies
 RUN npm install
