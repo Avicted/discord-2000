@@ -1,5 +1,7 @@
 import { format, utcToZonedTime } from "date-fns-tz"
-import { GuildMember, TextChannel, VoiceState } from "discord.js"
+import { GuildMember, MessageEmbed, TextChannel, VoiceState } from "discord.js"
+import { getConnection } from "typeorm"
+import { User } from "../entity/User"
 import { IEvent } from "../interfaces/event"
 import { client } from "../main"
 
@@ -19,8 +21,6 @@ module.exports = class VoiceStateUpdate implements IEvent {
         const oldChannelName: string | undefined = oldState.channel?.name
         const newChannelName: string | undefined = newState.channel?.name
 
-
-        let textChannelMessage: string = ''
 
         // User that changed voice channel
         let user: GuildMember | undefined
@@ -43,25 +43,56 @@ module.exports = class VoiceStateUpdate implements IEvent {
         }
 
         // Timestamp converted to local time based on timezone e.g. 'Europe/Berlin'
-        const timestamp: string = format(utcToZonedTime(new Date(), timezone), 'yyyy-MM-dd HH:mm:ss', { timeZone: timezone })
+        const timestamp: string = `Time: ${format(utcToZonedTime(new Date(), timezone), 'yyyy-MM-dd HH:mm:ss', { timeZone: timezone })}`
+        let userAction: string = ''
 
         // User has disconnected from a voice channel
         if (newChannelId === undefined) {
-            textChannelMessage = `${username} has disconnected from ${oldChannelName} at ${timestamp}`
+            userAction = `has disconnected from ${oldChannelName}`
         }
         // User has joined a voice channel
         else if (oldChannelId === undefined && newChannelId !== undefined) {
-            textChannelMessage = `${username} has joined ${newChannelName} at ${timestamp}`
+            userAction = `has joined ${newChannelName}`
+
+            // Is the user already stored in the database?
+            const userInDatabase = await getConnection()
+                .getRepository(User)
+                .createQueryBuilder('user')
+                .where('user.id = :id', { id: user.id })
+                .getOne()
+
+            if (userInDatabase) {
+                // Update the users nickname and updatedAt
+                await getConnection()
+                    .createQueryBuilder()
+                    .update(User)
+                    .set({
+                        nickName: username,
+                    })
+                    .where('id = :id', { id: user.id })
+                    .execute()
+            }
+            else {
+                // Create the user
+                await getConnection()
+                    .createQueryBuilder()
+                    .insert()
+                    .into(User)
+                    .values([
+                        {
+                            id: user.id,
+                            displayName: user.displayName,
+                            nickName: username,
+                        },
+                    ])
+                    .execute()
+            }
         }
         // User has moved to a new voice channel
         else if (oldChannelId !== newChannelId) {
-            textChannelMessage = `${username} moved to ${newChannelName} at ${timestamp}`
+            userAction = `moved to ${newChannelName}`
         }
-
-        console.log(textChannelMessage)
-
-        // Send a logging message to the presence_text_channel_updates
-        if (textChannelMessage.length <= 0) {
+        else {
             return
         }
 
@@ -75,6 +106,12 @@ module.exports = class VoiceStateUpdate implements IEvent {
             return
         }
 
-        textChannel.send(textChannelMessage);
+        const embedMessage: MessageEmbed = new MessageEmbed()
+            .setColor('#0099ff')
+            .setTitle(`${username}`)
+            .setDescription(`${userAction}`)
+            .setFooter(`${timestamp}`)
+
+        textChannel.send(embedMessage)
     }
 }

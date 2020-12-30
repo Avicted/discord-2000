@@ -26,11 +26,11 @@
         "donjayamanne.githistory",
         "dbaeumer.vscode-eslint",
         "ms-vscode.vscode-typescript-tslint-plugin",
-        "esbenp.prettier-vscode",
+        "esbenp.prettier-vscode"
     ],
 
     // Use 'forwardPorts' to make a list of ports inside the container available locally.
-    // "forwardPorts": [3000],
+    "forwardPorts": [5432],
 
     // Uncomment the next line to run commands after the container is created - for example installing curl.
     "postCreateCommand": "npm install",

@@ -6,7 +6,7 @@ const prefix = process.env.cmdPrefix as string
 
 
 module.exports = class MessageEvent implements IEvent {
-    public execute(message: Message) {
+    public async execute(message: Message) {
         if (message === undefined) return
         if (!message.content.startsWith(prefix) || message.author.bot) return
 
@@ -17,8 +17,8 @@ module.exports = class MessageEvent implements IEvent {
 
         // Is the command provided by the user a registered command?
         const selectedCommand = [...clientCommands.values()].filter((command: ICommand) => command.name === userCommand)
-        if (selectedCommand.length < 1) return;
+        if (selectedCommand.length < 1) return
 
-        selectedCommand[0].execute(message)
+        await selectedCommand[0].execute(message)
     }
 }
