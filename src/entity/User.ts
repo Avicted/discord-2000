@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryColumn, CreateDateColumn, UpdateDateColumn } from "typeorm"
+import { Entity, Column, PrimaryColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm"
+import { AudioCommand } from "./AudioCommand";
 
 @Entity()
 export class User {
@@ -10,6 +11,9 @@ export class User {
 
     @Column()
     nickName?: string
+
+    @OneToMany(() => AudioCommand, audioCommand => audioCommand.user)
+    audioCommands!: AudioCommand[]
 
     @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt!: Date

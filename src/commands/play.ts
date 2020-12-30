@@ -1,8 +1,11 @@
 import fs from 'fs'
-import { Message, StreamDispatcher, VoiceChannel, VoiceConnection } from "discord.js";
+import { Message, VoiceChannel } from "discord.js";
 import { ICommand } from "../interfaces/command";
 import { Queue } from '../queue';
 import { audioQueue } from '../main';
+import { getConnection } from 'typeorm';
+import { User } from '../entity/User';
+import { AudioCommand } from '../entity/AudioCommand';
 const prefix = process.env.cmdPrefix as string
 
 module.exports = class Play implements ICommand {
@@ -50,6 +53,27 @@ module.exports = class Play implements ICommand {
 
             const queueEntry: Map<string, VoiceChannel> = new Map()
             this._audioQueue.push(queueEntry.set(fileName, voiceChannel))
+
+            const userInDatabase = await getConnection()
+                .getRepository(User)
+                .createQueryBuilder('user')
+                .where('user.id = :id', { id: message.member.id })
+                .getOne()
+
+            if (userInDatabase) {
+                // Insert a new audio command from the user
+                await getConnection()
+                    .createQueryBuilder()
+                    .insert()
+                    .into(AudioCommand)
+                    .values([
+                        {
+                            user: userInDatabase,
+                            command: fileName,
+                        },
+                    ])
+                    .execute()
+            }
         } else {
             message.reply('You need to join a voice channel first!');
         }

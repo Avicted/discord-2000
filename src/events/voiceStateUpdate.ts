@@ -69,7 +69,7 @@ module.exports = class VoiceStateUpdate implements IEvent {
                     .set({
                         nickName: username,
                     })
-                    .where("id = :id", { id: user.id })
+                    .where('id = :id', { id: user.id })
                     .execute()
             }
             else {

@@ -41,6 +41,8 @@ the app can be tailed with `docker-compose logs --follow`
 
 ## Database migrations
 
+All existing database migrations are run against the database on application start.
+
 Create a new migration:
 
 `npm run typeorm migration:generate -- -n InitialUserModel`
