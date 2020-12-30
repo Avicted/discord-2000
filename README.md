@@ -38,3 +38,13 @@ The .ogg audio files are automatically listed in the `!help` command.
 Create a .env file with the contents from the .env.example, provide the secrets.
 Run the application with docker-compose e.g. `docker-compose up -d --build`. The logs of
 the app can be tailed with `docker-compose logs --follow`
+
+## Database migrations
+
+Create a new migration:
+
+`npm run typeorm migration:generate -- -n InitialUserModel`
+
+Run migrations:
+
+`npm run typeorm migration:run`

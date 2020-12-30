@@ -1,5 +1,7 @@
 import { format, utcToZonedTime } from "date-fns-tz"
 import { GuildMember, MessageEmbed, TextChannel, VoiceState } from "discord.js"
+import { getConnection } from "typeorm"
+import { User } from "../entity/User"
 import { IEvent } from "../interfaces/event"
 import { client } from "../main"
 
@@ -51,6 +53,40 @@ module.exports = class VoiceStateUpdate implements IEvent {
         // User has joined a voice channel
         else if (oldChannelId === undefined && newChannelId !== undefined) {
             userAction = `has joined ${newChannelName}`
+
+            // Is the user already stored in the database?
+            const userInDatabase = await getConnection()
+                .getRepository(User)
+                .createQueryBuilder('user')
+                .where('user.id = :id', { id: user.id })
+                .getOne()
+
+            if (userInDatabase) {
+                // Update the users nickname and updatedAt
+                await getConnection()
+                    .createQueryBuilder()
+                    .update(User)
+                    .set({
+                        nickName: username,
+                    })
+                    .where("id = :id", { id: user.id })
+                    .execute()
+            }
+            else {
+                // Create the user
+                await getConnection()
+                    .createQueryBuilder()
+                    .insert()
+                    .into(User)
+                    .values([
+                        {
+                            id: user.id,
+                            displayName: user.displayName,
+                            nickName: username,
+                        },
+                    ])
+                    .execute()
+            }
         }
         // User has moved to a new voice channel
         else if (oldChannelId !== newChannelId) {
@@ -74,7 +110,7 @@ module.exports = class VoiceStateUpdate implements IEvent {
             .setColor('#0099ff')
             .setTitle(`${username}`)
             .setDescription(`${userAction}`)
-            .setFooter(`${timestamp}`);
+            .setFooter(`${timestamp}`)
 
         textChannel.send(embedMessage)
     }
