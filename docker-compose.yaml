@@ -48,7 +48,7 @@ services:
             - POSTGRES_DB=${postgres_db}
             - PGDATA=/var/lib/postgresql/data/pgdata
         volumes:
-            - ${PWD}/postgres/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+            - ./postgres/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
             - postgres:/var/lib/postgresql/data
         ports:
             - 5432:5432
