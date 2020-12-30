@@ -39,9 +39,7 @@ services:
 
     postgres:
         container_name: 'postgres'
-        build:
-            context: ..
-            dockerfile: postgres/Dockerfile
+        image: postgres:13.1
         restart: unless-stopped
         environment:
             - POSTGRES_USER=${postgres_user}

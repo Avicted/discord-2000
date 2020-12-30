@@ -2,6 +2,8 @@ import { format, utcToZonedTime } from "date-fns-tz"
 import { GuildMember, MessageEmbed, TextChannel, VoiceState } from "discord.js"
 import { getConnection } from "typeorm"
 import { User } from "../entity/User"
+import { UserPresence } from "../entity/UserPresence"
+import { UserPresenceAction } from "../enums/userPresenceAction"
 import { IEvent } from "../interfaces/event"
 import { client } from "../main"
 
@@ -49,13 +51,55 @@ module.exports = class VoiceStateUpdate implements IEvent {
         // User has disconnected from a voice channel
         if (newChannelId === undefined) {
             userAction = `has disconnected from ${oldChannelName}`
+
+            let userInDatabase: User | undefined = await getConnection()
+                .getRepository(User)
+                .createQueryBuilder('user')
+                .where('user.id = :id', { id: user.id })
+                .getOne()
+
+            if (!userInDatabase) {
+                // Create the user
+                await getConnection()
+                    .createQueryBuilder()
+                    .insert()
+                    .into(User)
+                    .values([
+                        {
+                            id: user.id,
+                            displayName: user.displayName,
+                            nickName: username,
+                        },
+                    ])
+                    .execute()
+
+                userInDatabase = await getConnection()
+                    .getRepository(User)
+                    .createQueryBuilder('user')
+                    .where('user.id = :id', { id: user.id })
+                    .getOne()
+            }
+
+
+            // Add a new userPresence row
+            await getConnection()
+                .createQueryBuilder()
+                .insert()
+                .into(UserPresence)
+                .values([
+                    {
+                        user: userInDatabase,
+                        action: UserPresenceAction.DISCONNECTED
+                    },
+                ])
+                .execute()
         }
         // User has joined a voice channel
         else if (oldChannelId === undefined && newChannelId !== undefined) {
             userAction = `has joined ${newChannelName}`
 
             // Is the user already stored in the database?
-            const userInDatabase = await getConnection()
+            let userInDatabase: User | undefined = await getConnection()
                 .getRepository(User)
                 .createQueryBuilder('user')
                 .where('user.id = :id', { id: user.id })
@@ -86,7 +130,26 @@ module.exports = class VoiceStateUpdate implements IEvent {
                         },
                     ])
                     .execute()
+
+                userInDatabase = await getConnection()
+                    .getRepository(User)
+                    .createQueryBuilder('user')
+                    .where('user.id = :id', { id: user.id })
+                    .getOne()
             }
+
+            // Add a new userPresence row
+            await getConnection()
+                .createQueryBuilder()
+                .insert()
+                .into(UserPresence)
+                .values([
+                    {
+                        user: userInDatabase,
+                        action: UserPresenceAction.JOINED
+                    },
+                ])
+                .execute()
         }
         // User has moved to a new voice channel
         else if (oldChannelId !== newChannelId) {
