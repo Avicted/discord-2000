@@ -5,6 +5,9 @@ FROM node:14.15-buster as production
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends ffmpeg postgresql-client
 
+COPY /bin/wait-for-it.sh /usr/wait-for-it.sh
+RUN chmod +x /usr/wait-for-it.sh
+
 # set the working directory inside the image
 WORKDIR /app
 
