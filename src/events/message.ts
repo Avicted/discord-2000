@@ -6,7 +6,7 @@ const prefix = process.env.cmdPrefix as string
 
 
 module.exports = class MessageEvent implements IEvent {
-    public async execute(message: Message) {
+    public async execute(message: Message): Promise<void> {
         if (message === undefined) return
         if (!message.content.startsWith(prefix) || message.author.bot) return
 

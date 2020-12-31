@@ -7,12 +7,12 @@ module.exports = {
     database: process.env.postgres_db,
     synchronize: false,
     logging: false,
-    entities: ['dist/entity/**/*.js'],
-    migrations: ['dist/migration/**/*.js'],
-    subscribers: ['dist/subscriber/**/*.js'],
+    entities: ['dist/persistence/entity/**/*.js'],
+    migrations: ['dist/persistence/migration/**/*.js'],
+    subscribers: ['dist/persistence/subscriber/**/*.js'],
     cli: {
-        entitiesDir: ['src/entity'],
-        migrationsDir: ['src/migration'],
-        subscribersDir: ['src/subscriber'],
+        entitiesDir: ['src/persistence/entity'],
+        migrationsDir: ['src/persistence/migration'],
+        subscribersDir: ['src/persistence/subscriber'],
     },
 }

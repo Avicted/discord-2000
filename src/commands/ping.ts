@@ -13,7 +13,7 @@ module.exports = class Ping implements ICommand {
         return this._description;
     }
 
-    public async execute(message: Message) {
+    public async execute(message: Message): Promise<void> {
         message.channel.send('Pong.')
     }
 }

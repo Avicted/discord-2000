@@ -1,8 +1,8 @@
 import { format, utcToZonedTime } from "date-fns-tz"
 import { GuildMember, MessageEmbed, TextChannel, VoiceState } from "discord.js"
 import { getConnection, InsertResult } from "typeorm"
-import { User } from "../entity/User"
-import { UserPresence } from "../entity/UserPresence"
+import { User } from "../persistence/entity/User"
+import { UserPresence } from "../persistence/entity/UserPresence"
 import { UserPresenceAction } from "../enums/userPresenceAction"
 import { IEvent } from "../interfaces/event"
 import { client } from "../main"
@@ -51,7 +51,7 @@ module.exports = class VoiceStateUpdate implements IEvent {
             .execute()
     }
 
-    public async execute(oldState: VoiceState, newState: VoiceState) {
+    public async execute(oldState: VoiceState, newState: VoiceState): Promise<void> {
         if (enablePresenceUpdates === 'false') {
             return
         }

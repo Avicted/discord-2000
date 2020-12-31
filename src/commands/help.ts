@@ -16,7 +16,7 @@ module.exports = class Help implements ICommand {
         return this._description;
     }
 
-    public async execute(message: Message) {
+    public async execute(message: Message): Promise<void> {
         let info = "**COMMAND LIST**\n\n"
 
         this._clientCommands.forEach((command: ICommand) => {

@@ -22,7 +22,7 @@ module.exports = class TTS implements ICommand {
         return this._description;
     }
 
-    public async execute(message: Message) {
+    public async execute(message: Message): Promise<void> {
         let args: string[] = message.content.slice(prefix.length).trim().split(/ +/)
         console.log({
             args
