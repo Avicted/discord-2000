@@ -4,6 +4,8 @@ This is a Discord bot where new commands and events are easy to add in code. New
 
 ## Development
 
+**Open the workspace in VSCode `/workspace.code.workspace`**
+
 Create a .env file with the contents from the .env.example, provide the secrets.
 Develop inside a remote docker container in VSCode.
 

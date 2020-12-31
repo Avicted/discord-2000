@@ -1,6 +1,6 @@
-import { Message } from "discord.js";
-import { ICommand } from "../interfaces/command";
-import { clientCommands } from "../main";
+import { Message } from 'discord.js'
+import { ICommand } from '../interfaces/command'
+import { clientCommands } from '../main'
 import fs from 'fs'
 
 module.exports = class Help implements ICommand {
@@ -9,19 +9,19 @@ module.exports = class Help implements ICommand {
     _clientCommands: any = clientCommands
 
     get name(): string {
-        return this._name;
+        return this._name
     }
 
     get description(): string {
-        return this._description;
+        return this._description
     }
 
-    public async execute(message: Message) {
-        let info = "**COMMAND LIST**\n\n"
+    public async execute(message: Message): Promise<void> {
+        let info = '**COMMAND LIST**\n\n'
 
         this._clientCommands.forEach((command: ICommand) => {
             info += `:white_small_square: ${command.name} -  ${command.description}\n`
-        });
+        })
 
         // List all local audio files
         fs.readdir('./media/', (err: any, files: string[]) => {
@@ -31,20 +31,20 @@ module.exports = class Help implements ICommand {
                 return
             }
 
-            info += `\n**Audio commands**\n`;
+            info += `\n**Audio commands**\n`
 
-            files.forEach(file => {
+            files.forEach((file) => {
                 const fileExtension: string = file.split('.')[1]
                 if (fileExtension !== 'ogg') {
                     console.error(`The file ${file} is not an .ogg audio file.`)
                     return
                 }
 
-                const fileName: string = file.substr(0, file.length - 4);
-                info += `:white_small_square: ${fileName}\n`;
-            });
+                const fileName: string = file.substr(0, file.length - 4)
+                info += `:white_small_square: ${fileName}\n`
+            })
 
-            message.channel.send(info);
-        });
+            message.channel.send(info)
+        })
     }
 }

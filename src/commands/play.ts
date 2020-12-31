@@ -1,11 +1,11 @@
 import fs from 'fs'
-import { Message, VoiceChannel } from "discord.js";
-import { ICommand } from "../interfaces/command";
-import { Queue } from '../queue';
-import { audioQueue } from '../main';
-import { getConnection } from 'typeorm';
-import { User } from '../entity/User';
-import { AudioCommand } from '../entity/AudioCommand';
+import { Message, VoiceChannel } from 'discord.js'
+import { ICommand } from '../interfaces/command'
+import { Queue } from '../queue'
+import { audioQueue } from '../main'
+import { getConnection } from 'typeorm'
+import { User } from '../persistence/entity/User'
+import { AudioCommand } from '../persistence/entity/AudioCommand'
 const prefix = process.env.cmdPrefix as string
 
 module.exports = class Play implements ICommand {
@@ -21,15 +21,15 @@ module.exports = class Play implements ICommand {
         return this._description
     }
 
-    public async execute(message: Message) {
+    public async execute(message: Message): Promise<void> {
         // Voice only works in guilds, if the message does not come from a guild,
         // we ignore it
-        if (!message.guild) return;
+        if (!message.guild) return
 
         const args: string[] = message.content.slice(prefix.length).trim().split(/ +/)
 
         if (args.length < 2) {
-            message.reply('Please enter a audio clip as the parameter');
+            message.reply('Please enter a audio clip as the parameter')
             return
         }
 
@@ -75,7 +75,7 @@ module.exports = class Play implements ICommand {
                     .execute()
             }
         } else {
-            message.reply('You need to join a voice channel first!');
+            message.reply('You need to join a voice channel first!')
         }
     }
 }
