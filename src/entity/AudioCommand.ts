@@ -10,7 +10,7 @@ export class AudioCommand {
     user!: User
 
     @Column()
-    command?: string
+    command!: string
 
     @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt!: Date

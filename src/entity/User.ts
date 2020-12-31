@@ -10,7 +10,7 @@ export class User {
     @Column()
     displayName!: string
 
-    @Column()
+    @Column({ nullable: true })
     nickName?: string
 
     @OneToMany(() => AudioCommand, audioCommand => audioCommand.user)
