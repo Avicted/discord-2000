@@ -2,7 +2,7 @@ import { Client, VoiceChannel } from 'discord.js'
 import { Queue } from './queue'
 import { AudioDispatcher } from './audioDispatcher'
 import { checkTimezoneSettings, loadCommandFiles, loadEvents } from './utils'
-import "reflect-metadata"
+import 'reflect-metadata'
 import { createConnection } from 'typeorm'
 const Discord = require('discord.js')
 export const client: Client = new Discord.Client()

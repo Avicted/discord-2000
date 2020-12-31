@@ -1,12 +1,12 @@
-import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, ManyToOne } from "typeorm"
-import { User } from "./User";
+import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, ManyToOne } from 'typeorm'
+import { User } from './User'
 
 @Entity()
 export class AudioCommand {
     @PrimaryGeneratedColumn()
     id!: number
 
-    @ManyToOne(() => User, user => user.audioCommands)
+    @ManyToOne(() => User, (user) => user.audioCommands)
     user!: User
 
     @Column()

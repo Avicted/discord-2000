@@ -1,11 +1,11 @@
-import { format, utcToZonedTime } from "date-fns-tz"
-import { GuildMember, MessageEmbed, TextChannel, VoiceState } from "discord.js"
-import { getConnection, InsertResult } from "typeorm"
-import { User } from "../persistence/entity/User"
-import { UserPresence } from "../persistence/entity/UserPresence"
-import { UserPresenceAction } from "../enums/userPresenceAction"
-import { IEvent } from "../interfaces/event"
-import { client } from "../main"
+import { format, utcToZonedTime } from 'date-fns-tz'
+import { GuildMember, MessageEmbed, TextChannel, VoiceState } from 'discord.js'
+import { getConnection, InsertResult } from 'typeorm'
+import { User } from '../persistence/entity/User'
+import { UserPresence } from '../persistence/entity/UserPresence'
+import { UserPresenceAction } from '../enums/userPresenceAction'
+import { IEvent } from '../interfaces/event'
+import { client } from '../main'
 
 const enablePresenceUpdates: string | undefined = process.env.enable_presence_updates
 const presenceTextChannel: string | undefined = process.env.presence_text_channel_updates
@@ -37,7 +37,10 @@ module.exports = class VoiceStateUpdate implements IEvent {
             .execute()
     }
 
-    private async addNewUserPresence(userInDatabase: User, userPresenceAction: UserPresenceAction): Promise<InsertResult> {
+    private async addNewUserPresence(
+        userInDatabase: User,
+        userPresenceAction: UserPresenceAction
+    ): Promise<InsertResult> {
         return await getConnection()
             .createQueryBuilder()
             .insert()
@@ -62,7 +65,6 @@ module.exports = class VoiceStateUpdate implements IEvent {
         const oldChannelName: string | undefined = oldState.channel?.name
         const newChannelName: string | undefined = newState.channel?.name
 
-
         // User that changed voice channel
         let user: GuildMember | undefined
         try {
@@ -84,7 +86,9 @@ module.exports = class VoiceStateUpdate implements IEvent {
         }
 
         // Timestamp converted to local time based on timezone e.g. 'Europe/Berlin'
-        const timestamp: string = `Time: ${format(utcToZonedTime(new Date(), timezone), 'yyyy-MM-dd HH:mm:ss', { timeZone: timezone })}`
+        const timestamp: string = `Time: ${format(utcToZonedTime(new Date(), timezone), 'yyyy-MM-dd HH:mm:ss', {
+            timeZone: timezone,
+        })}`
         let userAction: string = ''
 
         // User has disconnected from a voice channel
@@ -121,8 +125,7 @@ module.exports = class VoiceStateUpdate implements IEvent {
                     })
                     .where('id = :id', { id: user.id })
                     .execute()
-            }
-            else {
+            } else {
                 await this.createNewUserInDatabase(user)
                 userInDatabase = await this.getUserInDatabase(user)
 
@@ -134,8 +137,7 @@ module.exports = class VoiceStateUpdate implements IEvent {
         // User has moved to a new voice channel
         else if (oldChannelId !== newChannelId) {
             userAction = `moved to ${newChannelName}`
-        }
-        else {
+        } else {
             return
         }
 

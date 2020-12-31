@@ -1,9 +1,8 @@
-import { Message } from "discord.js";
-import { ICommand } from "../interfaces/command";
-import { IEvent } from "../interfaces/event";
-import { clientCommands } from "../main";
+import { Message } from 'discord.js'
+import { ICommand } from '../interfaces/command'
+import { IEvent } from '../interfaces/event'
+import { clientCommands } from '../main'
 const prefix = process.env.cmdPrefix as string
-
 
 module.exports = class MessageEvent implements IEvent {
     public async execute(message: Message): Promise<void> {

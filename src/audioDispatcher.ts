@@ -1,7 +1,7 @@
 import fs from 'fs'
-import { StreamDispatcher, VoiceChannel, VoiceConnection } from "discord.js";
-import { audioQueue } from "./main";
-import { Queue } from "./queue";
+import { StreamDispatcher, VoiceChannel, VoiceConnection } from 'discord.js'
+import { audioQueue } from './main'
+import { Queue } from './queue'
 
 export class AudioDispatcher {
     _audioQueue: Queue<Map<string, VoiceChannel>> = audioQueue
@@ -11,7 +11,7 @@ export class AudioDispatcher {
         console.log(`AudioDispatcher: loopAndCheckForQueueEntries started`)
         setInterval(() => {
             this.loopAndCheckForQueueEntries()
-        }, 1000);
+        }, 1000)
     }
 
     private loopAndCheckForQueueEntries(): void {
@@ -55,7 +55,6 @@ export class AudioDispatcher {
             console.error(err)
             return
         }
-
 
         const dispatcher: StreamDispatcher = connection.play(fs.createReadStream(filePath), {
             volume: 0.7,

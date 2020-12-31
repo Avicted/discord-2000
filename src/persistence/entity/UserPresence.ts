@@ -1,12 +1,12 @@
-import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, ManyToOne } from "typeorm"
-import { User } from "./User"
+import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, ManyToOne } from 'typeorm'
+import { User } from './User'
 
 @Entity()
 export class UserPresence {
     @PrimaryGeneratedColumn()
     id!: number
 
-    @ManyToOne(() => User, user => user.userPresence)
+    @ManyToOne(() => User, (user) => user.userPresence)
     user!: User
 
     @Column()

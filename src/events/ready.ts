@@ -1,4 +1,4 @@
-import { IEvent } from "../interfaces/event"
+import { IEvent } from '../interfaces/event'
 import { client, clientCommands } from '../main'
 const prefix = process.env.cmdPrefix as string
 
