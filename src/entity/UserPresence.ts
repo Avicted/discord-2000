@@ -10,7 +10,7 @@ export class UserPresence {
     user!: User
 
     @Column()
-    action?: string
+    action!: string
 
     @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt!: Date
