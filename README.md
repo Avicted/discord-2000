@@ -58,7 +58,7 @@ Run the application with docker-compose:
 
 ## Database migrations
 
-All existing database migrations are run against the database on application start.'
+All existing database migrations are run against the database on application start.
 
 ### Adding or modifying an entity
 
