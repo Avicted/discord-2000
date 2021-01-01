@@ -9,6 +9,7 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode",
         "prettier.enable": true,
         "prettier.configPath": ".prettierrc",
+        "prettier.ignorePath": ".prettierignore",
         "prettier.documentSelectors": [
             "workspace/src/**/*.ts"
         ],
