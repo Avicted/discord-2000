@@ -63,10 +63,9 @@ All existing database migrations are run against the database on application sta
 ### Adding or modifying an entity
 
 Create a new migration:
-
 `npm run typeorm migration:generate -- -n InitialUserModel`
 
-Build the codebase including the typescript migrations
+Build the codebase including the typescript migrations:
 `npm run compile`
 
 Show all migrations and their current state

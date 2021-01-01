@@ -1,4 +1,5 @@
 export enum UserPresenceAction {
     JOINED = 'JOINED',
     DISCONNECTED = 'DISCONNECTED',
+    CHANGED_VOICE_CHANNEL = 'CHANGED_VOICE_CHANNEL',
 }

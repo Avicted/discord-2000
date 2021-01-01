@@ -31,7 +31,8 @@ export class DbContext {
 
     public async addNewUserPresence(
         userInDatabase: User,
-        userPresenceAction: UserPresenceAction
+        userPresenceAction: UserPresenceAction,
+        newVoiceChannelId?: string
     ): Promise<InsertResult> {
         return await getConnection()
             .createQueryBuilder()
@@ -41,8 +42,23 @@ export class DbContext {
                 {
                     user: userInDatabase,
                     action: userPresenceAction,
+                    newVoiceChannelId: newVoiceChannelId,
                 },
             ])
             .execute()
+    }
+
+    // @TODO
+    // Calculate the hours and minues that a user has been
+    // online in this Discord server.
+    public async userOnlineTimeInServerTotal(user: GuildMember): Promise<string> {
+        return ''
+    }
+
+    // @TODO
+    // Calculate the hours and minues that a user has been
+    // online during the current year in this Discord server.
+    public async userOnlineTimeInServerCurrentYear(user: GuildMember): Promise<string> {
+        return ''
     }
 }

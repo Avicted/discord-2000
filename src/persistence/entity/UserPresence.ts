@@ -15,6 +15,10 @@ export class UserPresence {
     @Column()
     action!: string
 
+    // If the user did move to a different voice channel which channel did they move to?
+    @Column({ nullable: true })
+    newVoiceChannelId!: string
+
     @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt!: Date
 

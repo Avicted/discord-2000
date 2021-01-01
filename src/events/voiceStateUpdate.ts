@@ -61,10 +61,10 @@ module.exports = class VoiceStateUpdate implements IEvent {
                 userInDatabase = await dbContext.getUser(user)
 
                 if (userInDatabase) {
-                    await dbContext.addNewUserPresence(userInDatabase, UserPresenceAction.JOINED)
+                    await dbContext.addNewUserPresence(userInDatabase, UserPresenceAction.DISCONNECTED)
                 }
             } else {
-                await dbContext.addNewUserPresence(userInDatabase, UserPresenceAction.JOINED)
+                await dbContext.addNewUserPresence(userInDatabase, UserPresenceAction.DISCONNECTED)
             }
         }
         // User has joined a voice channel
@@ -87,15 +87,27 @@ module.exports = class VoiceStateUpdate implements IEvent {
             } else {
                 await dbContext.createNewUser(user)
                 userInDatabase = await dbContext.getUser(user)
+            }
 
-                if (userInDatabase) {
-                    await dbContext.addNewUserPresence(userInDatabase, UserPresenceAction.JOINED)
-                }
+            if (userInDatabase) {
+                await dbContext.addNewUserPresence(userInDatabase, UserPresenceAction.JOINED, newChannelId)
             }
         }
         // User has moved to a new voice channel
         else if (oldChannelId !== newChannelId) {
             userAction = `moved to ${newChannelName}`
+
+            // Is the user already stored in the database?
+            // @Note: no need to create the user, since they already exist if they are switching voice channels
+            const userInDatabase: User | undefined = await dbContext.getUser(user)
+
+            if (userInDatabase) {
+                await dbContext.addNewUserPresence(
+                    userInDatabase,
+                    UserPresenceAction.CHANGED_VOICE_CHANNEL,
+                    newChannelId
+                )
+            }
         } else {
             return
         }
