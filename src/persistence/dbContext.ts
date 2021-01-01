@@ -23,7 +23,7 @@ export class DbContext {
                 {
                     id: user.id,
                     displayName: user.displayName,
-                    nickName: user.nickname !== null ? user.nickname : undefined,
+                    nickname: user.nickname !== null ? user.nickname : undefined,
                 },
             ])
             .execute()

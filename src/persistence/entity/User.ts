@@ -4,18 +4,23 @@ import { UserPresence } from './UserPresence'
 
 @Entity()
 export class User {
+    // Discord user id
     @PrimaryColumn()
     id!: string
 
+    // Discord user displayName
     @Column()
     displayName!: string
 
+    // Discord user nickname if it is set
     @Column({ nullable: true })
-    nickName?: string
+    nickname?: string
 
+    // <!play> commands that the user has issued
     @OneToMany(() => AudioCommand, (audioCommand) => audioCommand.user)
     audioCommands!: AudioCommand[]
 
+    // Every connect / disconnect that the user has made to a voice channel through voiceStateUpdate.ts
     @OneToMany(() => UserPresence, (userPresence) => userPresence.user)
     userPresence!: UserPresence[]
 

@@ -80,7 +80,7 @@ module.exports = class VoiceStateUpdate implements IEvent {
                     .createQueryBuilder()
                     .update(User)
                     .set({
-                        nickName: user.nickname !== null ? user.nickname : undefined,
+                        nickname: user.nickname !== null ? user.nickname : undefined,
                     })
                     .where('id = :id', { id: user.id })
                     .execute()
