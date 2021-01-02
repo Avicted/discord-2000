@@ -3,6 +3,8 @@ import { getConnection, InsertResult } from 'typeorm'
 import { UserPresenceAction } from '../enums/userPresenceAction'
 import { User } from './entity/User'
 import { UserPresence } from './entity/UserPresence'
+import differenceInSeconds from 'date-fns/differenceInSeconds'
+import { formatDuration, intervalToDuration } from 'date-fns'
 
 // @Note: database access methods that can be used anywhere in the application
 export class DbContext {
@@ -48,17 +50,85 @@ export class DbContext {
             .execute()
     }
 
-    // @TODO
-    // Calculate the hours and minues that a user has been
-    // online in this Discord server.
-    public async userOnlineTimeInServerTotal(user: GuildMember): Promise<string> {
-        return ''
-    }
+    // Calculate the days, hours and minues that a user has been
+    // online in this Discord server. Online is defined as being in a voice channel of the Discord server.
+    public async userOnlineTimeInServerTotal(user: GuildMember): Promise<string | undefined> {
+        const userInDatabase: User | undefined = await getConnection()
+            .getRepository(User)
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.userPresence', 'userPresence')
+            .where('user.id = :id', { id: user.id })
+            .getOne()
 
-    // @TODO
-    // Calculate the hours and minues that a user has been
-    // online during the current year in this Discord server.
-    public async userOnlineTimeInServerCurrentYear(user: GuildMember): Promise<string> {
-        return ''
+        if (userInDatabase === undefined) {
+            return undefined
+        }
+
+        if (userInDatabase.userPresence.length <= 0) {
+            return undefined
+        }
+
+        let lookingForActionJoined: boolean = true
+        let lookingForActionDisconnected: boolean = false
+        let currentTimeInterval: { joined: Date | undefined; disconnected: Date | undefined } = {
+            joined: undefined,
+            disconnected: undefined,
+        }
+        let totalSecondsConnectedToDiscordServer: number = 0
+
+        userInDatabase.userPresence.forEach((userPresence: UserPresence) => {
+            if (lookingForActionJoined) {
+                if (userPresence.action !== UserPresenceAction.JOINED) {
+                    return
+                }
+
+                currentTimeInterval.joined = userPresence.createdAt
+
+                lookingForActionJoined = false
+                lookingForActionDisconnected = true
+            } else if (lookingForActionDisconnected) {
+                if (userPresence.action !== UserPresenceAction.DISCONNECTED) {
+                    return
+                }
+
+                currentTimeInterval.disconnected = userPresence.createdAt
+
+                lookingForActionJoined = true
+                lookingForActionDisconnected = false
+            }
+
+            // If both currentTimeInterval.joined and disconnected are known, we calculate the
+            // time duration between them. Store the duration and reset currentTimeInterval
+            if (currentTimeInterval.joined !== undefined && currentTimeInterval.disconnected !== undefined) {
+                const durationInSeconds: number = differenceInSeconds(
+                    currentTimeInterval.disconnected,
+                    currentTimeInterval.joined
+                )
+
+                totalSecondsConnectedToDiscordServer += durationInSeconds
+
+                currentTimeInterval.disconnected = undefined
+                currentTimeInterval.joined = undefined
+            }
+        })
+
+        // If the user has not disconnected yet and is currently online, then we need to calculate the
+        // time from when the user joined to the current time
+        if (currentTimeInterval.joined !== undefined && currentTimeInterval.disconnected === undefined) {
+            const durationInSeconds: number = differenceInSeconds(new Date(), currentTimeInterval.joined)
+            totalSecondsConnectedToDiscordServer += durationInSeconds
+        }
+
+        const humanReadableTimeConnectedToServer: string = formatDuration(
+            intervalToDuration({ start: 0, end: totalSecondsConnectedToDiscordServer * 1000 })
+        )
+
+        console.log({
+            info: 'DbContext: userOnlineTimeInServerTotal',
+            user: userInDatabase.displayName,
+            humanReadableTimeConnectedToServer,
+        })
+
+        return humanReadableTimeConnectedToServer
     }
 }
