@@ -16,7 +16,6 @@ module.exports = class TopAudio implements ICommand {
     }
 
     public async execute(message: Message): Promise<void> {
-        console.log(message.member)
         if (message.member === null) {
             return
         }

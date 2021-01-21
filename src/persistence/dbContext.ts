@@ -145,7 +145,11 @@ export class DbContext {
             .limit(10)
             .getRawMany()
 
-        console.log(topAudioCommands)
+        console.log({
+            info: 'topTenAudioCommands',
+            topAudioCommands,
+        })
+
         return topAudioCommands
     }
 }
