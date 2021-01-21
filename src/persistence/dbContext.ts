@@ -5,6 +5,8 @@ import { User } from './entity/User'
 import { UserPresence } from './entity/UserPresence'
 import differenceInSeconds from 'date-fns/differenceInSeconds'
 import { formatDuration, intervalToDuration } from 'date-fns'
+import { AudioCommand } from './entity/AudioCommand'
+import { ITopAudioCommand } from '../interfaces/topAudioCommands'
 
 // @Note: database access methods that can be used anywhere in the application
 export class DbContext {
@@ -130,5 +132,20 @@ export class DbContext {
         })
 
         return humanReadableTimeConnectedToServer
+    }
+
+    public async topTenAudioCommands(): Promise<ITopAudioCommand[]> {
+        const topAudioCommands: ITopAudioCommand[] = await getConnection()
+            .getRepository(AudioCommand)
+            .createQueryBuilder('audio_command')
+            .select('audio_command.command AS command')
+            .addSelect('COUNT(*) AS count')
+            .groupBy('audio_command.command')
+            .orderBy('count', 'DESC')
+            .limit(10)
+            .getRawMany()
+
+        console.log(topAudioCommands)
+        return topAudioCommands
     }
 }

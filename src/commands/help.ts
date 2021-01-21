@@ -1,6 +1,7 @@
-import { Message } from 'discord.js'
+import { Message, MessageEmbed } from 'discord.js'
 import { ICommand } from '../interfaces/command'
 import { clientCommands } from '../main'
+const prefix = process.env.cmdPrefix as string
 import fs from 'fs'
 
 module.exports = class Help implements ICommand {
@@ -17,11 +18,19 @@ module.exports = class Help implements ICommand {
     }
 
     public async execute(message: Message): Promise<void> {
-        let info = '**COMMAND LIST**\n\n'
+        const embedMessage: MessageEmbed = new MessageEmbed().setColor('#ff00ff').setTitle(`Bop bop`)
+
+        const commandNames: string[] = []
 
         this._clientCommands.forEach((command: ICommand) => {
-            info += `:white_small_square: ${command.name} -  ${command.description}\n`
+            if (command.name === 'help') {
+                return
+            }
+
+            commandNames.push(`${prefix}${command.name} - ${command.description}`)
         })
+
+        embedMessage.addField(`Commands`, commandNames.join('\n'))
 
         // List all local audio files
         fs.readdir('./media/', (err: any, files: string[]) => {
@@ -31,7 +40,7 @@ module.exports = class Help implements ICommand {
                 return
             }
 
-            info += `\n**Audio commands**\n`
+            const audioFileNames: string[] = []
 
             files.forEach((file) => {
                 const fileExtension: string = file.split('.')[1]
@@ -41,10 +50,25 @@ module.exports = class Help implements ICommand {
                 }
 
                 const fileName: string = file.substr(0, file.length - 4)
-                info += `:white_small_square: ${fileName}\n`
+                audioFileNames.push(fileName)
             })
 
-            message.channel.send(info)
+            embedMessage.addField('\u200B', '\u200B')
+
+            // Divide the audio commands into three columns
+            const audioFileNameColumns: string[][] = []
+            const columnSize: number = audioFileNames.length / 3
+
+            for (let i = 0; i < 3; i++) {
+                const group: string[] = audioFileNames.slice(i * columnSize, (1 + i) * columnSize)
+                audioFileNameColumns.push(group)
+            }
+
+            embedMessage.addField(`Audio commands`, audioFileNameColumns[0], true)
+            embedMessage.addField(`\u200B`, audioFileNameColumns[1], true)
+            embedMessage.addField(`\u200B`, audioFileNameColumns[2], true)
+
+            message.channel.send(embedMessage)
         })
     }
 }

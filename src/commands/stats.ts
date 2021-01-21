@@ -24,20 +24,22 @@ module.exports = class Stats implements ICommand {
         const userStatistics: string | undefined = await dbContext.userOnlineTimeInServerTotal(message.member)
 
         // Answer the user in a direct message
+        const embedMessage: MessageEmbed = new MessageEmbed()
+
         if (userStatistics === undefined) {
-            const embedMessage: MessageEmbed = new MessageEmbed()
+            embedMessage
                 .setColor('#ff0000')
                 .setTitle(`An error occurred`)
                 .setDescription(`Could not calculate your total online time for this Discord server.`)
 
             message.author.send(embedMessage)
         } else {
-            const embedMessage: MessageEmbed = new MessageEmbed()
+            embedMessage
                 .setColor('#ff00ff')
                 .setTitle(`Total time active in the server`)
                 .setDescription(`${userStatistics}`)
-
-            message.author.send(embedMessage)
         }
+
+        message.author.send(embedMessage)
     }
 }
