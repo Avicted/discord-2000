@@ -63,8 +63,10 @@ All existing database migrations are run against the database on application sta
 ### Database backup dump
 `docker exec -t <container_name> pg_dumpall -c -U <postgres_username> > dump_`\`date +%d-%m-%Y"_"%H_%M_%S\`.sql`
 
-### Database backup restore
-`cat your_dump.sql | docker exec -i <container_id> psql -U <postgres_username>`
+### Database backup restore (Note: not best practice)
+Requires that you manually remove the DROP USER statement from the SQL dump when you want to restore.
+
+`cat your_dump.sql | docker exec -i <container_id> psql -U <postgres_username> <database_name>`
 
 ---
 ### Adding or modifying an entity
