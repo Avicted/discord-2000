@@ -20,7 +20,6 @@ module.exports = class TopAudio implements ICommand {
             return
         }
 
-        // Fetch the users statistics
         const dbContext: DbContext = new DbContext()
         const topAudioCommands: ITopAudioCommand[] = await dbContext.topTenAudioCommands()
         const embedMessage: MessageEmbed = new MessageEmbed()
