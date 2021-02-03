@@ -3,7 +3,7 @@ import { ICommand } from '../interfaces/command'
 import fs from 'fs'
 const prefix = process.env.cmdPrefix as string
 
-module.exports = class Ping implements ICommand {
+module.exports = class Stonk implements ICommand {
     _name: string = 'stonk'
     _description: string = `Provides stock data for a given ticker, eg. ${prefix}stonk aapl`
 
