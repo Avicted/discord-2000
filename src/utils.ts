@@ -4,6 +4,11 @@ import { createCommand, ICommand, ICommandConstructor } from './interfaces/comma
 import { client, clientCommands } from './main'
 import { createEvent, IEvent, IEventConstructor } from './interfaces/event'
 
+process.on('unhandledRejection', (error: any, p) => {
+    console.log('--------------- UNHANDLED PROMISE REJECTION ---------------')
+    console.dir(error?.stack)
+})
+
 export function checkTimezoneSettings(): void {
     const enablePresenceUpdates: string | undefined = process.env.enable_presence_updates
     const presenceTextChannel: string | undefined = process.env.presence_text_channel_updates

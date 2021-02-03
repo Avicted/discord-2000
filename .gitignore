@@ -11,6 +11,7 @@ coverage/
 # Sound files .ogg
 media/.gitkeep
 media/
+.jpeg
 
 tts_temp_audio/.gitkeep
 tts_temp_audio/
