@@ -44,8 +44,8 @@ def generate_chart(symbol,data):
     figure.layout.template = 'plotly_dark'
     figure.update_layout(
         xaxis_rangeslider_visible=False,
-        width=1920,
-        height=800,
+        width=1280,
+        height=720,
         title=symbol,
     )
 
