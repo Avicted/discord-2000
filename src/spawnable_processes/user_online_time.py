@@ -79,7 +79,6 @@ def main():
             cur.execute("""SELECT id, action, "createdAt", "updatedAt", "userId", "newVoiceChannelId"
                 FROM public.user_presence
                 WHERE date_part('year', "createdAt") >= date_part('year', CURRENT_DATE)
-                -- AND "userId" = '273193637481938944' -- Avic
                 AND "action" != 'CHANGED_VOICE_CHANNEL'
                 ORDER BY "id";""")
         except:
