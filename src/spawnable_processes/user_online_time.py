@@ -18,7 +18,7 @@ class HiddenPrints:
 
 
 def daterange(start_date, end_date):
-    for n in range(int((end_date - start_date).days)):
+    for n in range(int((end_date - start_date).days + 1)):
         yield start_date + timedelta(n)
 
 
@@ -139,6 +139,20 @@ def main():
                                 "action": "DISCONNECTED",
                                 "datetime": created_at
                             }
+                    else:
+                        # Update the users state
+                        user_state[user_id] = {
+                            "action": "DISCONNECTED",
+                            "datetime": created_at
+                        }
+
+                        # the user has connected the day before, they disconnected on this day
+                        disconnected_at = user_state[user_id]["datetime"]
+                        connected_at = dt.combine(disconnected_at, datetime.time.min)
+                        total_hours = datetime_diff_to_hours(disconnected_at, connected_at)
+                        print(total_hours)
+                        total_hours_per_day = total_hours_per_day + total_hours
+
 
             # Handle users that never disconnected before 00:00 on this date
             # Their online time is added to the total_hours_per_day
