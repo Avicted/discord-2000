@@ -76,7 +76,6 @@ def main():
         cur = conn.cursor()
 
         try:
-            # TODO: do not fetch users where isBot = True
             cur.execute("""SELECT 
                 user_presence.id, 
                 user_presence.action, 
