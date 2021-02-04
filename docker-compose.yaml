@@ -19,7 +19,6 @@ services:
 
         volumes:
             - .:/app
-            - /app/node_modules
 
         environment:
             - token=${token}
