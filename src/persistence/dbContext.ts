@@ -18,7 +18,7 @@ export class DbContext {
             .getOne()
     }
 
-    public async createNewUser(user: GuildMember): Promise<InsertResult> {
+    public async createNewUser(user: GuildMember, isBot: boolean): Promise<InsertResult> {
         return await getConnection()
             .createQueryBuilder()
             .insert()
@@ -28,6 +28,7 @@ export class DbContext {
                     id: user.id,
                     displayName: user.displayName,
                     nickname: user.nickname !== null ? user.nickname : undefined,
+                    isBot: isBot,
                 },
             ])
             .execute()

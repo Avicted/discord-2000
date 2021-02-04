@@ -16,6 +16,9 @@ export class User {
     @Column({ nullable: true })
     nickname?: string
 
+    @Column({ nullable: true })
+    isBot?: boolean
+
     // <!play> commands that the user has issued
     @OneToMany(() => AudioCommand, (audioCommand) => audioCommand.user)
     audioCommands!: AudioCommand[]

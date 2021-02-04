@@ -76,10 +76,20 @@ def main():
         cur = conn.cursor()
 
         try:
-            cur.execute("""SELECT id, action, "createdAt", "updatedAt", "userId", "newVoiceChannelId"
-                FROM public.user_presence
-                WHERE date_part('year', "createdAt") >= date_part('year', CURRENT_DATE)
+            # TODO: do not fetch users where isBot = True
+            cur.execute("""SELECT 
+                user_presence.id, 
+                user_presence.action, 
+                user_presence."createdAt", 
+                user_presence."updatedAt", 
+                user_presence."userId", 
+                user_presence."newVoiceChannelId"
+                FROM public.user_presence AS user_presence
+                LEFT JOIN public.user AS u
+                ON user_presence."userId" = u.Id
+                WHERE date_part('year', user_presence."createdAt") >= date_part('year', CURRENT_DATE)
                 AND "action" != 'CHANGED_VOICE_CHANNEL'
+                AND u."isBot" = false
                 ORDER BY "id";""")
         except:
             print("Error selecting from the database")

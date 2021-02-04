@@ -71,6 +71,9 @@ Requires that you manually remove the DROP USER statement from the SQL dump when
 ---
 ### Adding or modifying an entity
 
+Build the codebase including the typescript migrations:
+`npm run compile`
+
 Create a new migration:
 `npm run typeorm migration:generate -- -n InitialUserModel`
 

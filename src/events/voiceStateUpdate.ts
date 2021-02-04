@@ -1,5 +1,6 @@
 import { format, utcToZonedTime } from 'date-fns-tz'
 import { GuildMember, MessageEmbed, TextChannel, VoiceState } from 'discord.js'
+import { User as DiscordUser } from 'discord.js'
 import { getConnection } from 'typeorm'
 import { User } from '../persistence/entity/User'
 import { UserPresenceAction } from '../enums/userPresenceAction'
@@ -24,21 +25,23 @@ module.exports = class VoiceStateUpdate implements IEvent {
         const newChannelName: string | undefined = newState.channel?.name
         const dbContext: DbContext = new DbContext()
 
-        // User that changed voice channel
-        let user: GuildMember | undefined
+        // guildMember that changed voice channel
+        let guildMember: GuildMember | undefined
+        let discordUser: DiscordUser | undefined
         try {
-            user = await oldState?.guild?.members.fetch(userId)
+            guildMember = await oldState?.guild?.members.fetch(userId)
+            discordUser = await client.users.fetch(userId)
         } catch (error) {
             console.error(error)
             return
         }
 
-        if (user === undefined) {
-            console.error(`voiceStateUpdate: The user is undefined`)
+        if (guildMember === undefined) {
+            console.error(`voiceStateUpdate: The guildMember is undefined`)
             return
         }
 
-        const username: string = user.nickname === null ? user.displayName : user.nickname
+        const username: string = guildMember.nickname === null ? guildMember.displayName : guildMember.nickname
         if (timezone === undefined) {
             console.error(`voiceStateUpdate: The timezone is undefined`)
             return
@@ -54,11 +57,11 @@ module.exports = class VoiceStateUpdate implements IEvent {
         if (newChannelId === undefined) {
             userAction = `has disconnected from ${oldChannelName}`
 
-            let userInDatabase: User | undefined = await dbContext.getUser(user)
+            let userInDatabase: User | undefined = await dbContext.getUser(guildMember)
 
             if (!userInDatabase) {
-                await dbContext.createNewUser(user)
-                userInDatabase = await dbContext.getUser(user)
+                await dbContext.createNewUser(guildMember, discordUser.bot)
+                userInDatabase = await dbContext.getUser(guildMember)
 
                 if (userInDatabase) {
                     await dbContext.addNewUserPresence(userInDatabase, UserPresenceAction.DISCONNECTED)
@@ -72,7 +75,7 @@ module.exports = class VoiceStateUpdate implements IEvent {
             userAction = `has joined ${newChannelName}`
 
             // Is the user already stored in the database?
-            let userInDatabase: User | undefined = await dbContext.getUser(user)
+            let userInDatabase: User | undefined = await dbContext.getUser(guildMember)
 
             if (userInDatabase) {
                 // Update the users nickname and updatedAt
@@ -80,13 +83,13 @@ module.exports = class VoiceStateUpdate implements IEvent {
                     .createQueryBuilder()
                     .update(User)
                     .set({
-                        nickname: user.nickname !== null ? user.nickname : undefined,
+                        nickname: guildMember.nickname !== null ? guildMember.nickname : undefined,
                     })
-                    .where('id = :id', { id: user.id })
+                    .where('id = :id', { id: guildMember.id })
                     .execute()
             } else {
-                await dbContext.createNewUser(user)
-                userInDatabase = await dbContext.getUser(user)
+                await dbContext.createNewUser(guildMember, discordUser.bot)
+                userInDatabase = await dbContext.getUser(guildMember)
             }
 
             if (userInDatabase) {
@@ -99,7 +102,7 @@ module.exports = class VoiceStateUpdate implements IEvent {
 
             // Is the user already stored in the database?
             // @Note: no need to create the user, since they already exist if they are switching voice channels
-            const userInDatabase: User | undefined = await dbContext.getUser(user)
+            const userInDatabase: User | undefined = await dbContext.getUser(guildMember)
 
             if (userInDatabase) {
                 await dbContext.addNewUserPresence(
