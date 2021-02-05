@@ -31,19 +31,27 @@ def datetime_diff_to_hours(disconnected_at, connected_at):
     return total_hours
 
 
-def generate_chart(data):
-    chart_filename = f"total_hours_online_{dt.now()}.jpeg"
+def generate_chart(data, input_user_id):
     figure = plotly.graph_objects.Figure(data=[plotly.graph_objects.Bar(
             x=data['date'],
             y=data['total_hours_online'],
     )])
 
     figure.layout.template = 'plotly_dark'
+    timestamp = dt.now().strftime("%Y-%m-%d-%H-%M-%S")
+    
+    if input_user_id is not None:
+        chart_filename = f"total_hours_online_{input_user_id}_{timestamp}.jpeg"
+        title = "Your online hours per day this year"
+    else: 
+        title = "Total hours online per day (all users) this year"
+        chart_filename = f"total_hours_online_{timestamp}.jpeg"
+
     figure.update_layout(
         xaxis_rangeslider_visible=False,
         width=1280,
         height=720,
-        title="Total hours online per day (all users) this year",
+        title=title
     )
 
     figure.write_image(chart_filename)    
@@ -75,21 +83,45 @@ def main():
 
         cur = conn.cursor()
 
+        
+        input_user_id = None
+
+        if len(sys.argv) > 1:
+            input_data = json.loads(sys.argv[1])
+            input_user_id = input_data[0]['user_id']
+
         try:
-            cur.execute("""SELECT 
-                user_presence.id, 
-                user_presence.action, 
-                user_presence."createdAt", 
-                user_presence."updatedAt", 
-                user_presence."userId", 
-                user_presence."newVoiceChannelId"
-                FROM public.user_presence AS user_presence
-                LEFT JOIN public.user AS u
-                ON user_presence."userId" = u.Id
-                WHERE date_part('year', user_presence."createdAt") >= date_part('year', CURRENT_DATE)
-                AND "action" != 'CHANGED_VOICE_CHANNEL'
-                AND u."isBot" = false
-                ORDER BY "id";""")
+            if input_user_id is not None:
+                cur.execute("""SELECT 
+                    user_presence.id, 
+                    user_presence.action, 
+                    user_presence."createdAt", 
+                    user_presence."updatedAt", 
+                    user_presence."userId", 
+                    user_presence."newVoiceChannelId"
+                    FROM public.user_presence AS user_presence
+                    LEFT JOIN public.user AS u
+                    ON user_presence."userId" = u.Id
+                    WHERE date_part('year', user_presence."createdAt") >= date_part('year', CURRENT_DATE)
+                    AND "action" != 'CHANGED_VOICE_CHANNEL'
+                    AND u."isBot" = false
+                    AND u."id" = '%s'
+                    ORDER BY "id";""" % (input_user_id))
+            else:
+                cur.execute("""SELECT 
+                    user_presence.id, 
+                    user_presence.action, 
+                    user_presence."createdAt", 
+                    user_presence."updatedAt", 
+                    user_presence."userId", 
+                    user_presence."newVoiceChannelId"
+                    FROM public.user_presence AS user_presence
+                    LEFT JOIN public.user AS u
+                    ON user_presence."userId" = u.Id
+                    WHERE date_part('year', user_presence."createdAt") >= date_part('year', CURRENT_DATE)
+                    AND "action" != 'CHANGED_VOICE_CHANNEL'
+                    AND u."isBot" = false
+                    ORDER BY "id";""")
         except:
             print("Error selecting from the database")
 
@@ -169,7 +201,7 @@ def main():
 
     # print(hours_online_per_day)
 
-    chart_filename = generate_chart(hours_online_per_day)
+    chart_filename = generate_chart(hours_online_per_day, input_user_id)
     print(chart_filename)
 
     sys.stdout.flush()

@@ -1,11 +1,10 @@
 import { Message, MessageAttachment, MessageEmbed } from 'discord.js'
 import { ICommand } from '../interfaces/command'
 import fs from 'fs'
-const prefix = process.env.cmdPrefix as string
 
 module.exports = class Online implements ICommand {
     _name: string = 'online'
-    _description: string = `Generates a chart with total online hours this year`
+    _description: string = `Chart with total online hours this year for all users.`
 
     get name(): string {
         return this._name
@@ -53,8 +52,9 @@ module.exports = class Online implements ICommand {
                 data = data.trim()
                 const imagePath: string = `${process.env.PWD}/${data}`
                 const attachment = new MessageAttachment(imagePath, `${data}`)
+                const messageText: string = `Total hours online per day (all users) this year`
 
-                message.channel.send(`Total hours online per day (all users) this year`, attachment).then(() => {
+                message.channel.send(messageText, attachment).then(() => {
                     // Delete the image from the project root
                     try {
                         fs.unlinkSync(imagePath)
