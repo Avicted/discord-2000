@@ -5,7 +5,7 @@ const prefix = process.env.cmdPrefix as string
 
 module.exports = class Online implements ICommand {
     _name: string = 'online'
-    _description: string = `Generates a chart with total online hours this year`
+    _description: string = `Chart with total online hours this year for all users. !online me, for personal hours.`
 
     get name(): string {
         return this._name
@@ -16,12 +16,24 @@ module.exports = class Online implements ICommand {
     }
 
     public async execute(message: Message): Promise<void> {
+        const args: string[] = message.content.slice(prefix.length).trim().split(/ +/)
+        let pythonDataPayload: any = [{ user_id: null }]
+        let fetchPersonalData: boolean = false
+
+        if (args.length === 2 && args[1] === 'me') {
+            pythonDataPayload = [{ user_id: message.author.id }]
+            fetchPersonalData = true
+        }
+
         const runPy = new Promise((resolve, reject) => {
             const { spawn } = require('child_process')
             let scriptOutput: string = ''
             let errorOutput: string = ''
 
-            const childProcess = spawn('python3', ['./src/spawnable_processes/user_online_time.py'])
+            const childProcess = spawn('python3', [
+                './src/spawnable_processes/user_online_time.py',
+                JSON.stringify(pythonDataPayload),
+            ])
             childProcess.stdout.setEncoding('utf8')
             childProcess.stdout.on('data', (data: any) => {
                 console.log('stdout: ' + data)
@@ -53,15 +65,29 @@ module.exports = class Online implements ICommand {
                 data = data.trim()
                 const imagePath: string = `${process.env.PWD}/${data}`
                 const attachment = new MessageAttachment(imagePath, `${data}`)
+                const messageText: string = fetchPersonalData
+                    ? `Your online hours per day this year`
+                    : `Total hours online per day (all users) this year`
 
-                message.channel.send(`Total hours online per day (all users) this year`, attachment).then(() => {
-                    // Delete the image from the project root
-                    try {
-                        fs.unlinkSync(imagePath)
-                    } catch (err) {
-                        console.error(err)
-                    }
-                })
+                if (fetchPersonalData) {
+                    message.author.send(messageText, attachment).then(() => {
+                        // Delete the image from the project root
+                        try {
+                            fs.unlinkSync(imagePath)
+                        } catch (err) {
+                            console.error(err)
+                        }
+                    })
+                } else {
+                    message.channel.send(messageText, attachment).then(() => {
+                        // Delete the image from the project root
+                        try {
+                            fs.unlinkSync(imagePath)
+                        } catch (err) {
+                            console.error(err)
+                        }
+                    })
+                }
             })
             .catch((error) => {
                 console.error(error)
