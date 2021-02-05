@@ -1,7 +1,6 @@
 import { Message, MessageAttachment, MessageEmbed } from 'discord.js'
 import { ICommand } from '../interfaces/command'
 import fs from 'fs'
-const prefix = process.env.cmdPrefix as string
 
 module.exports = class Online implements ICommand {
     _name: string = 'online'
@@ -16,7 +15,6 @@ module.exports = class Online implements ICommand {
     }
 
     public async execute(message: Message): Promise<void> {
-        const args: string[] = message.content.slice(prefix.length).trim().split(/ +/)
         const runPy = new Promise((resolve, reject) => {
             const { spawn } = require('child_process')
             let scriptOutput: string = ''
