@@ -38,13 +38,14 @@ def generate_chart(data, input_user_id):
     )])
 
     figure.layout.template = 'plotly_dark'
+    timestamp = dt.now().strftime("%Y-%m-%d-%H-%M-%S")
     
     if input_user_id is not None:
-        chart_filename = f"total_hours_online_{input_user_id}_{dt.now()}.jpeg"
+        chart_filename = f"total_hours_online_{input_user_id}_{timestamp}.jpeg"
         title = "Your online hours per day this year"
     else: 
         title = "Total hours online per day (all users) this year"
-        chart_filename = f"total_hours_online_{dt.now()}.jpeg"
+        chart_filename = f"total_hours_online_{timestamp}.jpeg"
 
     figure.update_layout(
         xaxis_rangeslider_visible=False,
@@ -82,8 +83,12 @@ def main():
 
         cur = conn.cursor()
 
-        input_data = json.loads(sys.argv[1])
-        input_user_id = input_data[0]['user_id']
+        
+        input_user_id = None
+
+        if len(sys.argv) > 1:
+            input_data = json.loads(sys.argv[1])
+            input_user_id = input_data[0]['user_id']
 
         try:
             if input_user_id is not None:
