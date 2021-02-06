@@ -132,6 +132,7 @@ def main():
         hours_online_per_day = pd.DataFrame(columns=['date', 'total_hours_online'])
         index = 0
 
+        
         # for every date this year so far
         for single_date in daterange(start_date, end_date):
             # reset every day
@@ -191,7 +192,12 @@ def main():
             for user_id in user_state:
                 if user_state[user_id]["action"] == 'JOINED':
                     connected_at = user_state[user_id]["datetime"]
-                    disconnected_at = dt.combine(connected_at, datetime.time.max)
+
+                    if single_date == date.today():
+                        disconnected_at = dt.combine(connected_at, datetime.datetime.now().time())
+                    else:
+                        disconnected_at = dt.combine(connected_at, datetime.time.max)
+
                     total_hours = datetime_diff_to_hours(disconnected_at, connected_at)
                     total_hours_per_day = total_hours_per_day + total_hours
             
