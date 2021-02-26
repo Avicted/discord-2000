@@ -6,7 +6,7 @@ import { audioQueue } from '../main'
 import { getConnection } from 'typeorm'
 import { User } from '../persistence/entity/User'
 import { AudioCommand } from '../persistence/entity/AudioCommand'
-const prefix = process.env.cmdPrefix as string
+const prefix = process.env.CMD_PREFIX as string
 
 module.exports = class Play implements ICommand {
     _name: string = 'play'

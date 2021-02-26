@@ -10,9 +10,9 @@ process.on('unhandledRejection', (error: any, p) => {
 })
 
 export function checkTimezoneSettings(): void {
-    const enablePresenceUpdates: string | undefined = process.env.enable_presence_updates
-    const presenceTextChannel: string | undefined = process.env.presence_text_channel_updates
-    const timezone: string | undefined = process.env.timezone
+    const enablePresenceUpdates: string | undefined = process.env.ENABLE_PRESENCE_UPDATES
+    const presenceTextChannel: string | undefined = process.env.PRESENCE_TEXT_CHANNEL_UPDATES
+    const timezone: string | undefined = process.env.TIMEZONE
 
     // Check if the date-fns timezone has been set correctly
     if (enablePresenceUpdates === 'true') {

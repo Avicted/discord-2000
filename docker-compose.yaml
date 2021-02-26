@@ -8,11 +8,11 @@ services:
             context: .
             dockerfile: Dockerfile
             args:
-                - token=${token}
-                - cmdPrefix=${cmdPrefix}
-                - presence_text_channel_updates=${presence_text_channel_updates}
-                - enable_presence_updates=${enable_presence_updates}
-                - timezone=${timezone}
+                - TOKEN=${TOKEN}
+                - CMD_PREFIX=${CMD_PREFIX}
+                - PRESENCE_TEXT_CHANNEL_UPDATES=${PRESENCE_TEXT_CHANNEL_UPDATES}
+                - ENABLE_PRESENCE_UPDATES=${ENABLE_PRESENCE_UPDATES}
+                - TIMEZONE=${TIMEZONE}
                 - NODE_ENV=production
 
         network_mode: host
@@ -22,15 +22,15 @@ services:
             - /app/node_modules
 
         environment:
-            - token=${token}
-            - cmdPrefix=${cmdPrefix}
-            - presence_text_channel_updates=${presence_text_channel_updates}
-            - enable_presence_updates=${enable_presence_updates}
-            - timezone=${timezone}
-            - postgres_db=${postgres_db}
-            - postgres_user=${postgres_user}
-            - postgres_password=${postgres_password}
-            - postgres_host=${postgres_host}
+            - TOKEN=${TOKEN}
+            - CMD_PREFIX=${CMD_PREFIX}
+            - PRESENCE_TEXT_CHANNEL_UPDATES=${PRESENCE_TEXT_CHANNEL_UPDATES}
+            - ENABLE_PRESENCE_UPDATES=${ENABLE_PRESENCE_UPDATES}
+            - TIMEZONE=${TIMEZONE}
+            - POSTGRES_DB=${POSTGRES_DB}
+            - POSTGRES_USER=${POSTGRES_USER}
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+            - POSTGRES_HOST=${POSTGRES_HOST}
             - NODE_ENV=production
 
         restart: always
@@ -41,9 +41,9 @@ services:
         image: postgres:13.1
         restart: unless-stopped
         environment:
-            - POSTGRES_USER=${postgres_user}
-            - POSTGRES_PASSWORD=${postgres_password}
-            - POSTGRES_DB=${postgres_db}
+            - POSTGRES_USER=${POSTGRES_USER}
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+            - POSTGRES_DB=${POSTGRES_DB}
             - PGDATA=/var/lib/postgresql/data/pgdata
         volumes:
             - ./postgres/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh

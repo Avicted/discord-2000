@@ -15,11 +15,11 @@ RUN chown -R node:node /app
 USER node
 
 # Arguments passed from .env -> docker-compose.yaml -> Dockerfile
-ARG token
-ARG cmdPrefix
-ARG enable_presence_updates
-ARG presence_text_channel_updates
-ARG timezone
+ARG TOKEN
+ARG CMD_PREFIX
+ARG ENABLE_PRESENCE_UPDATES
+ARG PRESENCE_TEXT_CHANNEL_UPDATES
+ARG TIMEZONE
 
 
 # copy the list of dependencies to the working directory
