@@ -8,8 +8,8 @@ import { IEvent } from '../interfaces/event'
 import { client } from '../main'
 import { DbContext } from '../persistence/dbContext'
 
-const enablePresenceUpdates: string | undefined = process.env.enable_presence_updates
-const presenceTextChannel: string | undefined = process.env.presence_text_channel_updates
+const enablePresenceUpdates: string | undefined = process.env.ENABLE_PRESENCE_UPDATES
+const presenceTextChannel: string | undefined = process.env.PRESENCE_TEXT_CHANNEL_UPDATES
 const timezone: string | undefined = process.env.timezone
 
 module.exports = class VoiceStateUpdate implements IEvent {

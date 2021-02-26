@@ -61,10 +61,10 @@ def generate_chart(data, input_user_id):
 def main():
     with HiddenPrints():
         database_settings = {
-            "host": os.environ['postgres_host'],
-            "database": os.environ['postgres_db'],
-            "user": os.environ['postgres_user'],
-            "password": os.environ['postgres_password']
+            "host": os.environ['POSTGRES_HOST'],
+            "database": os.environ['POSTGRES_DB'],
+            "user": os.environ['POSTGRES_USER'],
+            "password": os.environ['POSTGRES_PASSWORD']
         }
 
 

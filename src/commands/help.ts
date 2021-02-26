@@ -1,7 +1,7 @@
 import { Message, MessageEmbed } from 'discord.js'
 import { ICommand } from '../interfaces/command'
 import { clientCommands } from '../main'
-const prefix = process.env.cmdPrefix as string
+const prefix = process.env.CMD_PREFIX as string
 import fs from 'fs'
 
 module.exports = class Help implements ICommand {

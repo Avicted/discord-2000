@@ -1,7 +1,7 @@
 import { Message, MessageAttachment, MessageEmbed } from 'discord.js'
 import { ICommand } from '../interfaces/command'
 import fs from 'fs'
-const prefix = process.env.cmdPrefix as string
+const prefix = process.env.CMD_PREFIX as string
 
 module.exports = class Stonk implements ICommand {
     _name: string = 'stonk'

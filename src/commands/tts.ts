@@ -1,7 +1,7 @@
 import fs from 'fs'
 import { Message, VoiceChannel } from 'discord.js'
 import { ICommand } from '../interfaces/command'
-const prefix = process.env.cmdPrefix as string
+const prefix = process.env.CMD_PREFIX as string
 const ffmpeg = require('fluent-ffmpeg')
 import text2wav = require('text2wav')
 import { Queue } from '../queue'
