@@ -32,10 +32,10 @@ services:
             - NODE_ENV=production
 
         restart: always
-        command: bash -c "/usr/wait-for-it.sh -t 0 localhost:5432 -- npm run start"
+        command: bash -c "/usr/wait-for-it.sh -t 0 discord-2000-postgres:5432 -- npm run start"
 
-    postgres:
-        container_name: 'postgres'
+    discord-2000-postgres:
+        container_name: 'discord-2000-postgres'
         image: postgres:13.1
         restart: unless-stopped
         environment:
