@@ -10,7 +10,7 @@ import { DbContext } from '../persistence/dbContext'
 
 const enablePresenceUpdates: string | undefined = process.env.ENABLE_PRESENCE_UPDATES
 const presenceTextChannel: string | undefined = process.env.PRESENCE_TEXT_CHANNEL_UPDATES
-const timezone: string | undefined = process.env.timezone
+const timezone: string | undefined = process.env.TIMEZONE
 
 module.exports = class VoiceStateUpdate implements IEvent {
     public async execute(oldState: VoiceState, newState: VoiceState): Promise<void> {
