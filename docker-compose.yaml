@@ -14,13 +14,11 @@ services:
                 - ENABLE_PRESENCE_UPDATES=${ENABLE_PRESENCE_UPDATES}
                 - TIMEZONE=${TIMEZONE}
                 - NODE_ENV=production
-
-        network_mode: host
-
+        networks:
+            - nasdc-private-net
         volumes:
             - .:/app
             - /app/node_modules
-
         environment:
             - TOKEN=${TOKEN}
             - CMD_PREFIX=${CMD_PREFIX}
@@ -50,6 +48,12 @@ services:
             - postgres:/var/lib/postgresql/data
         ports:
             - 5432:5432
+        networks:
+            - nasdc-private-net
 
 volumes:
     postgres:
+
+networks:
+    nasdc-private-net:
+        external: true
