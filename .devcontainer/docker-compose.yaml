@@ -12,45 +12,41 @@ services:
         # See https://aka.ms/vscode-remote/containers/non-root for details.
         user: node
 
+        env_file:
+            - '../.env'
+        
         build:
             context: ..
             dockerfile: .devcontainer/Dockerfile
-
-        environment:
-            - TOKEN=${TOKEN}
-            - CMD_PREFIX=${CMD_PREFIX}
-            - PRESENCE_TEXT_CHANNEL_UPDATES=${PRESENCE_TEXT_CHANNEL_UPDATES}
-            - ENABLE_PRESENCE_UPDATES=${ENABLE_PRESENCE_UPDATES}
-            - TIMEZONE=${TIMEZONE}
-            - POSTGRES_DB=${POSTGRES_DB}
-            - POSTGRES_USER=${POSTGRES_USER}
-            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-            - POSTGRES_HOST=${POSTGRES_HOST}
-            - NODE_ENV=development
 
         volumes:
             # Update this to wherever you want VS Code to mount the folder of your project
             - ../:/workspace:cached,Z
 
-        network_mode: host
+        # network_mode: host
+        networks:
+            - discord-2000-private-net
 
         # Overrides default command so things don't shut down after the process ends.
         command: /bin/sh -c "while sleep 1000; do :; done"
 
-    postgres:
-        container_name: 'postgres'
+    discord-2000-postgres:
+        container_name: 'discord-2000-postgres'
         image: postgres:13.1
         restart: unless-stopped
-        environment:
-            - POSTGRES_USER=${POSTGRES_USER}
-            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-            - POSTGRES_DB=${POSTGRES_DB}
-            - PGDATA=/var/lib/postgresql/data/pgdata
+        env_file:
+            - '../.env'
         volumes:
             - ${PWD}/postgres/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
-            - postgres:/var/lib/postgresql/data
+            - discord-2000-postgres-volume:/var/lib/postgresql/data
         ports:
             - 5432:5432
+        networks:
+            - discord-2000-private-net
 
 volumes:
-    postgres:
+    discord-2000-postgres-volume:
+
+networks:
+    discord-2000-private-net:
+        external: false
