@@ -40,6 +40,21 @@ module.exports = class Help implements ICommand {
                 return
             }
 
+            // Sort by created time
+            files = files
+                .map((fileName) => {
+                    return {
+                        name: fileName,
+                        time: fs.statSync(`./media/${fileName}`).mtime.getTime(),
+                    }
+                })
+                .sort((a, b) => {
+                    return b.time - a.time
+                })
+                .map((v) => {
+                    return v.name
+                })
+
             const audioFileNames: string[] = []
 
             files.forEach((file) => {
@@ -52,6 +67,14 @@ module.exports = class Help implements ICommand {
                 const fileName: string = file.substr(0, file.length - 4)
                 audioFileNames.push(fileName)
             })
+
+            if (audioFileNames.length >= 10) {
+                const slice = audioFileNames.slice(0, Math.ceil(audioFileNames.length / 10))
+
+                for (const fileName in slice) {
+                    audioFileNames[fileName] = `***${audioFileNames[fileName]}***`
+                }
+            }
 
             embedMessage.addField('\u200B', '\u200B')
 
