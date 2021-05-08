@@ -12,4 +12,10 @@ export class Queue<T> {
     length(): number {
         return this._store.length
     }
+
+    clear(): void {
+        for (let i = 0; i < this.length(); i++) {
+            this._store.pop()
+        }
+    }
 }

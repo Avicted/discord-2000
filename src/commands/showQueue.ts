@@ -33,7 +33,8 @@ module.exports = class ShowQueue implements ICommand {
 
         embedMessage.addField(`Now playing:`, nowPlaying, false)
 
-        if (audioFileNameColumns.length > 10) {
+        if (audioFileNameColumns.length === 0) {
+        } else if (audioFileNameColumns.length > 10) {
             const files = audioFileNameColumns.slice(0, 9)
             embedMessage.addField('Upcomming:', files.concat('\n'))
         } else {
