@@ -4,12 +4,13 @@ import { AudioDispatcher } from './audioDispatcher'
 import { checkTimezoneSettings, loadCommandFiles, loadEvents } from './utils'
 import 'reflect-metadata'
 import { createConnection } from 'typeorm'
+import { IAudioQueueEntry } from './interfaces/audioQueueEntry'
 const Discord = require('discord.js')
 export const client: Client = new Discord.Client()
 export const clientCommands = new Discord.Collection()
 
 // Global queue for storing audio sources
-export const audioQueue: Queue<Map<string, VoiceChannel>> = new Queue()
+export const audioQueue: Queue<IAudioQueueEntry> = new Queue()
 
 // Global audio dispatcher for playing audio from the audioQueue
 export const audioDispatcher: AudioDispatcher = new AudioDispatcher()

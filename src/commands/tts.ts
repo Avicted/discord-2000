@@ -6,11 +6,12 @@ const ffmpeg = require('fluent-ffmpeg')
 import text2wav = require('text2wav')
 import { Queue } from '../queue'
 import { audioQueue } from '../main'
+import { IAudioQueueEntry } from '../interfaces/audioQueueEntry'
 
 module.exports = class TTS implements ICommand {
     _name: string = 'tts'
     _description: string = 'Uses espeak to generate audio'
-    _audioQueue: Queue<Map<string, VoiceChannel>> = audioQueue
+    _audioQueue: Queue<IAudioQueueEntry> = audioQueue
     _ttsOutputWavFile: string = 'tts_temp_audio/tts_temp_raw'
     _ttsOutputMP3File: string = 'tts_temp_audio/tts_temp'
 
@@ -70,10 +71,11 @@ module.exports = class TTS implements ICommand {
             const voiceChannel: VoiceChannel = message.member.voice.channel
             await this.convertWavBytesToOpus(rawAudioData, message.createdTimestamp)
 
-            const queueEntry: Map<string, VoiceChannel> = new Map()
-            this._audioQueue.push(
-                queueEntry.set(`${this._ttsOutputMP3File}_${message.createdTimestamp}.mp3`, voiceChannel)
-            )
+            const queueEntry: IAudioQueueEntry = {
+                title: `${this._ttsOutputMP3File}_${message.createdTimestamp}.mp3`,
+                voiceChannel: voiceChannel,
+            }
+            this._audioQueue.push(queueEntry)
         } else {
             message.reply('You need to join a voice channel first!')
         }

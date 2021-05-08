@@ -6,12 +6,13 @@ import { audioQueue } from '../main'
 import { getConnection } from 'typeorm'
 import { User } from '../persistence/entity/User'
 import { AudioCommand } from '../persistence/entity/AudioCommand'
+import { IAudioQueueEntry } from '../interfaces/audioQueueEntry'
 const prefix = process.env.CMD_PREFIX as string
 
 module.exports = class Play implements ICommand {
     _name: string = 'play'
     _description: string = 'Plays a stored audio file'
-    _audioQueue: Queue<Map<string, VoiceChannel>> = audioQueue
+    _audioQueue: Queue<IAudioQueueEntry> = audioQueue
 
     get name(): string {
         return this._name
@@ -51,8 +52,8 @@ module.exports = class Play implements ICommand {
                 return
             }
 
-            const queueEntry: Map<string, VoiceChannel> = new Map()
-            this._audioQueue.push(queueEntry.set(fileName, voiceChannel))
+            const queueEntry: IAudioQueueEntry = { title: fileName, voiceChannel: voiceChannel }
+            this._audioQueue.push(queueEntry)
 
             const userInDatabase = await getConnection()
                 .getRepository(User)

@@ -14,8 +14,6 @@ export class Queue<T> {
     }
 
     clear(): void {
-        for (let i = 0; i < this.length(); i++) {
-            this._store.pop()
-        }
+        this._store = []
     }
 }
