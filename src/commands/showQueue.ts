@@ -21,6 +21,11 @@ module.exports = class ShowQueue implements ICommand {
         const audioFileNameColumns: string[] = []
         let nowPlaying: string = ''
 
+        if (this._audioQueue.length() <= 0) {
+            message.channel.send('The queue is empty')
+            return
+        }
+
         for (let i: number = 0; i < this._audioQueue.length(); i++) {
             const audioFileName = Array.from(this._audioQueue._store[i].keys())
 
