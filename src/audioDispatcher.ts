@@ -10,6 +10,7 @@ export class AudioDispatcher {
     _playingAudio: boolean = false
     _main_volume: number = 0.7
     _youtube_volume: number = 0.4
+    _dispatcher: StreamDispatcher | undefined = undefined
 
     public initialize() {
         console.log(`AudioDispatcher: loopAndCheckForQueueEntries started`)
@@ -21,6 +22,18 @@ export class AudioDispatcher {
     private loopAndCheckForQueueEntries(): void {
         if (!this._playingAudio && this._audioQueue.length() >= 1) {
             this.play()
+        }
+    }
+
+    public pause(): void {
+        if (this._dispatcher !== undefined) {
+            this._dispatcher.pause()
+        }
+    }
+
+    public resume(): void {
+        if (this._dispatcher !== undefined) {
+            this._dispatcher.resume()
         }
     }
 
@@ -63,8 +76,6 @@ export class AudioDispatcher {
             filePath = fileName
         }
 
-        let dispatcher: StreamDispatcher
-
         switch (audioFileSource) {
             case AudioFileSource.TTS_FILE:
             case AudioFileSource.LOCAL_FILE:
@@ -80,13 +91,13 @@ export class AudioDispatcher {
                     return
                 }
 
-                dispatcher = connection.play(fs.createReadStream(filePath), {
+                this._dispatcher = connection.play(fs.createReadStream(filePath), {
                     volume: this._main_volume,
                 })
                 break
 
             case AudioFileSource.YOUTUBE:
-                dispatcher = connection.play(await ytdl(filePath), { type: 'opus', volume: this._youtube_volume })
+                this._dispatcher = connection.play(await ytdl(filePath), { type: 'opus', volume: this._youtube_volume })
                 break
             default:
                 console.error(
@@ -95,7 +106,7 @@ export class AudioDispatcher {
                 return
         }
 
-        dispatcher.on('finish', (): void => {
+        this._dispatcher.on('finish', (): void => {
             // Remove the played file from the queue
             this._audioQueue.pop()
 
@@ -109,7 +120,9 @@ export class AudioDispatcher {
             }
 
             if (this._audioQueue.length() < 1) {
-                dispatcher.destroy() // end the stream
+                if (this._dispatcher !== undefined) {
+                    this._dispatcher.destroy() // end the stream
+                }
                 this._playingAudio = false
             } else {
                 // There are more files in the queue, continue to play the next one
