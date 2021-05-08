@@ -2,16 +2,15 @@ import { Message, VoiceChannel } from 'discord.js'
 import { ICommand } from '../interfaces/command'
 import { audioQueue } from '../main'
 import { Queue } from '../queue'
-import ytdlCoreDiscord from 'ytdl-core-discord'
-import ytdl from 'ytdl-core'
 import yts from 'yt-search'
+import { IAudioQueueEntry } from '../interfaces/audioQueueEntry'
 
 const prefix = process.env.CMD_PREFIX as string
 
 module.exports = class Youtube implements ICommand {
     _name: string = 'p'
     _description: string = 'Plays youtube videos as music'
-    _audioQueue: Queue<Map<string, VoiceChannel>> = audioQueue
+    _audioQueue: Queue<IAudioQueueEntry> = audioQueue
 
     get name(): string {
         return this._name
@@ -64,8 +63,13 @@ module.exports = class Youtube implements ICommand {
             firstResult.title
 
             // Queue a new sound / some music to be played
-            const queueEntry: Map<string, VoiceChannel> = new Map()
-            this._audioQueue.push(queueEntry.set(url, voiceChannel))
+            const queueEntry: IAudioQueueEntry = {
+                title: firstResult.title,
+                url: url,
+                voiceChannel: voiceChannel,
+                image: firstResult.thumbnail,
+            }
+            this._audioQueue.push(queueEntry)
         } else {
             message.reply('You need to join a voice channel first!')
         }

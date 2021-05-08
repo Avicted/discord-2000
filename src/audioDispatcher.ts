@@ -4,9 +4,10 @@ import { audioQueue } from './main'
 import { Queue } from './queue'
 import { AudioFileSource } from './enums/audioFileSource'
 import ytdl from 'ytdl-core-discord'
+import { IAudioQueueEntry } from './interfaces/audioQueueEntry'
 
 export class AudioDispatcher {
-    _audioQueue: Queue<Map<string, VoiceChannel>> = audioQueue
+    _audioQueue: Queue<IAudioQueueEntry> = audioQueue
     _playingAudio: boolean = false
     _main_volume: number = 0.7
     _youtube_volume: number = 0.4
@@ -51,8 +52,11 @@ export class AudioDispatcher {
 
         this._playingAudio = true
 
-        const fileName: string = this._audioQueue._store[0].keys().next().value
-        const voiceChannel: VoiceChannel | undefined = this._audioQueue._store[0].get(fileName)
+        // const fileName: string = this._audioQueue._store[0].keys().next().value
+        const fileName: string = this._audioQueue._store[0].title
+        const url: string = this._audioQueue._store[0].url ?? ''
+        // const voiceChannel: VoiceChannel | undefined = this._audioQueue._store[0].get(fileName)
+        const voiceChannel: VoiceChannel | undefined = this._audioQueue._store[0].voiceChannel
 
         if (voiceChannel === undefined) {
             console.error(`The VoiceChannel is undefined for the file name: ${fileName}`)
@@ -61,7 +65,10 @@ export class AudioDispatcher {
 
         const connection: VoiceConnection = await voiceChannel.join()
 
-        const isAYoutubeSource: boolean = fileName.includes('youtube.com')
+        let isAYoutubeSource: boolean = false
+        if (url) {
+            isAYoutubeSource = url.includes('youtube')
+        }
 
         // Is the file a local audio file or a temporary text to speech audio file?
         // const isTTSFile: boolean = fileName.startsWith('tts_temp_audio')
@@ -77,7 +84,7 @@ export class AudioDispatcher {
             filePath = `media/${fileName}.ogg`
         } else {
             audioFileSource = AudioFileSource.YOUTUBE
-            filePath = fileName
+            filePath = url
         }
 
         switch (audioFileSource) {

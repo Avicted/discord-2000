@@ -1,4 +1,5 @@
-import { Message, VoiceChannel } from 'discord.js'
+import { Message } from 'discord.js'
+import { IAudioQueueEntry } from '../interfaces/audioQueueEntry'
 import { ICommand } from '../interfaces/command'
 import { audioQueue } from '../main'
 import { Queue } from '../queue'
@@ -6,7 +7,7 @@ import { Queue } from '../queue'
 module.exports = class ClearQueue implements ICommand {
     _name: string = 'clear'
     _description: string = 'Clears the audio queue'
-    _audioQueue: Queue<Map<string, VoiceChannel>> = audioQueue
+    _audioQueue: Queue<IAudioQueueEntry> = audioQueue
 
     get name(): string {
         return this._name

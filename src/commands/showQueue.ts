@@ -1,4 +1,5 @@
 import { Message, MessageEmbed, VoiceChannel } from 'discord.js'
+import { IAudioQueueEntry } from '../interfaces/audioQueueEntry'
 import { ICommand } from '../interfaces/command'
 import { audioQueue } from '../main'
 import { Queue } from '../queue'
@@ -6,7 +7,7 @@ import { Queue } from '../queue'
 module.exports = class ShowQueue implements ICommand {
     _name: string = 'q'
     _description: string = 'Displays the audio queue'
-    _audioQueue: Queue<Map<string, VoiceChannel>> = audioQueue
+    _audioQueue: Queue<IAudioQueueEntry> = audioQueue
 
     get name(): string {
         return this._name
@@ -27,12 +28,12 @@ module.exports = class ShowQueue implements ICommand {
         }
 
         for (let i: number = 0; i < this._audioQueue.length(); i++) {
-            const audioFileName = Array.from(this._audioQueue._store[i].keys())
+            const audioFileName = this._audioQueue._store[i].title
 
             if (i === 0) {
-                nowPlaying = audioFileName[0]
+                nowPlaying = audioFileName
             } else {
-                audioFileNameColumns.push(audioFileName[0])
+                audioFileNameColumns.push(audioFileName)
             }
         }
 
