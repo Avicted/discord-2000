@@ -37,6 +37,10 @@ export class AudioDispatcher {
         }
     }
 
+    public skip(): void {
+        this.nextAudioClip()
+    }
+
     public async play(): Promise<void> {
         console.log(`AudioDispatcher: play()`)
 
@@ -60,7 +64,7 @@ export class AudioDispatcher {
         const isAYoutubeSource: boolean = fileName.includes('youtube.com')
 
         // Is the file a local audio file or a temporary text to speech audio file?
-        const isTTSFile: boolean = fileName.startsWith('tts_temp_audio')
+        // const isTTSFile: boolean = fileName.startsWith('tts_temp_audio')
         // const filePath: string = isTTSFile === true ? `${fileName}` : `media/${fileName}.ogg`
         let filePath: string
 
@@ -107,8 +111,22 @@ export class AudioDispatcher {
         }
 
         this._dispatcher.on('finish', (): void => {
-            // Remove the played file from the queue
-            this._audioQueue.pop()
+            this.nextAudioClip(filePath)
+            console.log(`Finished playing: ${fileName}`)
+        })
+
+        this._dispatcher.on('error', (error) => {
+            console.error(`[audioDispatcher]`)
+            console.error(error)
+        })
+    }
+
+    private nextAudioClip(filePath?: string): void {
+        // Remove the played file from the queue
+        this._audioQueue.pop()
+
+        if (filePath) {
+            const isTTSFile: boolean = filePath.startsWith('tts_temp_audio')
 
             if (isTTSFile) {
                 // remove the mp3 file
@@ -118,18 +136,16 @@ export class AudioDispatcher {
                     console.error(err)
                 }
             }
+        }
 
-            if (this._audioQueue.length() < 1) {
-                if (this._dispatcher !== undefined) {
-                    this._dispatcher.destroy() // end the stream
-                }
-                this._playingAudio = false
-            } else {
-                // There are more files in the queue, continue to play the next one
-                this.play()
+        if (this._audioQueue.length() < 1) {
+            if (this._dispatcher !== undefined) {
+                this._dispatcher.destroy() // end the stream
             }
-
-            console.log(`Finished playing: ${fileName}`)
-        })
+            this._playingAudio = false
+        } else {
+            // There are more files in the queue, continue to play the next one
+            this.play()
+        }
     }
 }
