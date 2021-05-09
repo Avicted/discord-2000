@@ -7,7 +7,7 @@ const prefix = process.env.CMD_PREFIX as string
 module.exports = class MessageEvent implements IEvent {
     public async execute(message: Message): Promise<void> {
         if (message === undefined) return
-        if (!message.content.startsWith(prefix) || message.author.bot) return
+        if (!message.content.startsWith(prefix)) return
 
         const args: string[] = message.content.slice(prefix.length).trim().split(/ +/)
         const userCommand: string | undefined = args.shift()?.toLowerCase()
