@@ -18,6 +18,12 @@ module.exports = class MessageEvent implements IEvent {
         const selectedCommand = [...clientCommands.values()].filter((command: ICommand) => command.name === userCommand)
         if (selectedCommand.length < 1) return
 
+        // @NOTE: @TODO: disabled due to Youtube updating their API and breaking ytdl: https://github.com/fent/node-ytdl-core/issues/945
+        if (userCommand === 'p') {
+            message.author.send('The command "p" command has been disabled due to youtube changing their API: https://github.com/fent/node-ytdl-core/issues/945');
+            return
+        }
+
         await selectedCommand[0].execute(message)
     }
 }
