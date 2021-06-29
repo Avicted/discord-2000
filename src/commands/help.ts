@@ -60,13 +60,18 @@ module.exports = class Help implements ICommand {
             files.forEach((file) => {
                 const fileExtension: string = file.split('.')[1]
                 if (fileExtension !== 'ogg') {
-                    console.error(`The file ${file} is not an .ogg audio file.`)
+                    console.warn(`The file ${file} is not an .ogg audio file.`)
                     return
                 }
 
                 const fileName: string = file.substr(0, file.length - 4)
                 audioFileNames.push(fileName)
             })
+
+            if (audioFileNames.length <= 0) {
+                message.channel.send(embedMessage)
+                return
+            }
 
             if (audioFileNames.length >= 10) {
                 const slice = audioFileNames.slice(0, Math.ceil(audioFileNames.length / 10))
@@ -87,9 +92,9 @@ module.exports = class Help implements ICommand {
                 audioFileNameColumns.push(group)
             }
 
-            embedMessage.addField(`Audio commands`, audioFileNameColumns[0], true)
-            embedMessage.addField(`\u200B`, audioFileNameColumns[1], true)
-            embedMessage.addField(`\u200B`, audioFileNameColumns[2], true)
+            embedMessage.addField(`Audio commands`, audioFileNameColumns[0] && '\u200B', true)
+            embedMessage.addField(`\u200B`, audioFileNameColumns[1] && '\u200B', true)
+            embedMessage.addField(`\u200B`, audioFileNameColumns[2] && '\u200B', true)
 
             message.channel.send(embedMessage)
         })
