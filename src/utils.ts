@@ -70,7 +70,7 @@ export async function loadEvents(): Promise<any> {
                         })()
                 ) // Run the event using the above defined emitter (client)
             } catch (error) {
-                console.error(error.stack) // If there is an error, console log the error stack message
+                console.error(error) // If there is an error, console log the error stack message
             }
         } catch (error) {
             console.error(`loadEvents: ${error}`)
