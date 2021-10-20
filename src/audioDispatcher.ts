@@ -119,7 +119,7 @@ export class AudioDispatcher {
                 }
 
                 const resource_local = createAudioResource(
-                    createReadStream(filePath, {})
+                    createReadStream(filePath)
                 )
 
                 this._player.play(resource_local)
@@ -129,11 +129,17 @@ export class AudioDispatcher {
                 break
 
             case AudioFileSource.YOUTUBE:
-                const stream = await ytdl(filePath, { filter: 'audioonly' })
-                const resource_youtube = createAudioResource(stream)
+                let stream = await ytdl(filePath, {
+                    filter: 'audioonly',
+                    highWaterMark: 1 << 25,
+                    quality: 'highestaudio',
+                })
+
+                const resource_youtube = createAudioResource(stream, { inputType: StreamType.Opus })
 
                 console.log({
                     info: 'AudioFileSource.YOUTUBE',
+                    filePath: filePath,
                     stream: stream,
                     resource_youtube: resource_youtube,
                 })
