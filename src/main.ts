@@ -10,13 +10,15 @@ import { ICommand } from './interfaces/command'
 export const client: Client = new Discord.Client({
     intents: [
         Intents.FLAGS.DIRECT_MESSAGES,
-        // Intents.FLAGS.GUILD_PRESENCES,
-        Intents.FLAGS.DIRECT_MESSAGES,
         Intents.FLAGS.GUILD_MESSAGES,
-        Intents.FLAGS.GUILD_VOICE_STATES,
+        // Intents.FLAGS.GUILD_PRESENCES,
+        // Intents.FLAGS.GUILD_VOICE_STATES,
+        
     ],
     partials: [
-        'CHANNEL'
+        'CHANNEL',
+        'GUILD_MEMBER',
+        'MESSAGE',
     ],
 })
 export const clientCommands = new Discord.Collection<string, ICommand>()
