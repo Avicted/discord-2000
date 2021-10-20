@@ -1,5 +1,5 @@
 # production environment image
-FROM node:14.15-buster as production
+FROM node:16.11-buster as production
 
 # update the OS & install ffmpeg
 RUN apt-key adv --refresh-keys --keyserver keyserver.ubuntu.com && apt-get update && export DEBIAN_FRONTEND=noninteractive \

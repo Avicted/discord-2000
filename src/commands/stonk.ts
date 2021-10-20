@@ -68,14 +68,16 @@ module.exports = class Stonk implements ICommand {
                 const imagePath: string = `${process.env.PWD}/${data}`
                 const attachment = new MessageAttachment(imagePath, `${data}`)
 
-                message.channel.send(`${tickerSymbol.toUpperCase()}`, attachment).then(() => {
-                    // Delete the image from the project root
-                    try {
-                        fs.unlinkSync(imagePath)
-                    } catch (err) {
-                        console.error(err)
-                    }
-                })
+                message.channel
+                    .send({ content: `${tickerSymbol.toUpperCase()}`, attachments: [attachment] })
+                    .then(() => {
+                        // Delete the image from the project root
+                        try {
+                            fs.unlinkSync(imagePath)
+                        } catch (err) {
+                            console.error(err)
+                        }
+                    })
             })
             .catch((error) => {
                 console.error(error)

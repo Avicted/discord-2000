@@ -69,7 +69,7 @@ module.exports = class Help implements ICommand {
             })
 
             if (audioFileNames.length <= 0) {
-                message.channel.send(embedMessage)
+                message.channel.send({ embeds: [embedMessage] })
                 return
             }
 
@@ -92,11 +92,11 @@ module.exports = class Help implements ICommand {
                 audioFileNameColumns.push(group)
             }
 
-            embedMessage.addField(`Audio commands`, audioFileNameColumns[0] ?? '\u200B', true)
-            embedMessage.addField(`\u200B`, audioFileNameColumns[1] ?? '\u200B', true)
-            embedMessage.addField(`\u200B`, audioFileNameColumns[2] ?? '\u200B', true)
+            embedMessage.addField(`Audio commands`, audioFileNameColumns[0].toString() ?? '\u200B', true)
+            embedMessage.addField(`\u200B`, audioFileNameColumns[1].toString() ?? '\u200B', true)
+            embedMessage.addField(`\u200B`, audioFileNameColumns[2].toString() ?? '\u200B', true)
 
-            message.channel.send(embedMessage)
+            message.channel.send({ embeds: [embedMessage] })
         })
     }
 }

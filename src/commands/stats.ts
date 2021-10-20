@@ -79,11 +79,10 @@ module.exports = class Stats implements ICommand {
                         .setColor('#ff00ff')
                         .setTitle(`Total time active in the server`)
                         .setDescription(`${userStatistics}`)
-                        .attachFiles([attachment])
                         .setImage(`attachment://${data}`)
                 }
 
-                message.author.send(embedMessage).then(() => {
+                message.author.send({ embeds: [embedMessage], files: [attachment] }).then(() => {
                     // Delete the image from the project root
                     try {
                         fs.unlinkSync(imagePath)

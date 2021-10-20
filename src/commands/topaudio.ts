@@ -42,6 +42,6 @@ module.exports = class TopAudio implements ICommand {
                 .addField(`Play count`, counts.join('\n'), true)
         }
 
-        message.channel.send(embedMessage)
+        message.channel.send({ embeds: [embedMessage] })
     }
 }

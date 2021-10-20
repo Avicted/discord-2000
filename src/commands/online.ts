@@ -54,7 +54,7 @@ module.exports = class Online implements ICommand {
                 const attachment = new MessageAttachment(imagePath, `${data}`)
                 const messageText: string = `Total hours online per day (all users) this year`
 
-                message.channel.send(messageText, attachment).then(() => {
+                message.channel.send({ content: messageText, attachments: [attachment] }).then(() => {
                     // Delete the image from the project root
                     try {
                         fs.unlinkSync(imagePath)

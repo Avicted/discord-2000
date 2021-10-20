@@ -38,7 +38,7 @@ module.exports = class ShowQueue implements ICommand {
             }
         }
 
-        embedMessage.addField(`Now playing:`, nowPlaying?.fileName, false)
+        embedMessage.addField(`Now playing:`, nowPlaying?.fileName.toString() || 'We have no idea what is currently playing', false)
 
         if (nowPlaying?.image) {
             embedMessage.setThumbnail(nowPlaying?.image)
@@ -47,7 +47,7 @@ module.exports = class ShowQueue implements ICommand {
         if (audioFileNameColumns.length === 0) {
         } else if (audioFileNameColumns.length > 10) {
             const files = audioFileNameColumns.slice(0, 9)
-            embedMessage.addField('Upcomming:', files.map((file) => file.fileName).concat('\n'))
+            embedMessage.addField('Upcomming:', files.map((file) => file.fileName).concat('\n').toString())
         } else {
             embedMessage.addField('Upcomming:', '\u200B')
 
@@ -56,6 +56,6 @@ module.exports = class ShowQueue implements ICommand {
             })
         }
 
-        message.channel.send(embedMessage)
+        message.channel.send({ embeds: [embedMessage] })
     }
 }

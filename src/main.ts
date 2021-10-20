@@ -1,4 +1,4 @@
-import { Client, VoiceChannel } from 'discord.js'
+import { Client, Intents } from 'discord.js'
 import { Queue } from './queue'
 import { AudioDispatcher } from './audioDispatcher'
 import { checkTimezoneSettings, loadCommandFiles, loadEvents } from './utils'
@@ -6,7 +6,13 @@ import 'reflect-metadata'
 import { createConnection } from 'typeorm'
 import { IAudioQueueEntry } from './interfaces/audioQueueEntry'
 const Discord = require('discord.js')
-export const client: Client = new Discord.Client()
+export const client: Client = new Discord.Client({
+    intents: [
+        Intents.FLAGS.DIRECT_MESSAGES,
+        Intents.FLAGS.GUILD_PRESENCES,
+        Intents.FLAGS.GUILD_VOICE_STATES,
+    ],
+})
 export const clientCommands = new Discord.Collection()
 
 // Global queue for storing audio sources

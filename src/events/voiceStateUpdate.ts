@@ -131,6 +131,6 @@ module.exports = class VoiceStateUpdate implements IEvent {
             .setDescription(`${userAction}`)
             .setFooter(`${timestamp}`)
 
-        textChannel.send(embedMessage)
+        textChannel.send({ embeds: [embedMessage] })
     }
 }
