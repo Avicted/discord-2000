@@ -14,10 +14,12 @@ module.exports = class MessageEvent implements IEvent {
 
         console.log(`The user: ${message.author.username} entered command: ${userCommand}`)
 
+        if (userCommand == undefined) return
+
         // Is the command provided by the user a registered command?
-        const selectedCommand = [...clientCommands.values()].filter((command: ICommand) => command.name === userCommand)
+        const selectedCommand: ICommand[] = [...clientCommands.values()].filter((command: ICommand) => command.name === userCommand)
         if (selectedCommand.length < 1) return
 
-        await selectedCommand[0].execute(message)
+        selectedCommand[0].execute(message)
     }
 }
