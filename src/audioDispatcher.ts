@@ -13,17 +13,10 @@ export class AudioDispatcher {
     _playingAudio: boolean = false
     _main_volume: number = 0.7
     _youtube_volume: number = 0.4
-    // _dispatcher: StreamDispatcher | undefined = undefined
     _player: AudioPlayer | undefined
 
     public initialize() {
         console.log(`AudioDispatcher: loopAndCheckForQueueEntries started`)
-
-        /* this._player = createAudioPlayer({
-            behaviors: {
-                noSubscriber: NoSubscriberBehavior.Pause,
-            },
-        }); */
 
         setInterval(() => {
             this.loopAndCheckForQueueEntries()
@@ -62,10 +55,8 @@ export class AudioDispatcher {
 
         this._playingAudio = true
 
-        // const fileName: string = this._audioQueue._store[0].keys().next().value
         const fileName: string = this._audioQueue._store[0].title
         const url: string = this._audioQueue._store[0].url ?? ''
-        // const voiceChannel: VoiceChannel | undefined = this._audioQueue._store[0].get(fileName)
         const voiceChannel: VoiceChannel | StageChannel = this._audioQueue._store[0].voiceChannel
 
         if (voiceChannel === undefined) {
@@ -90,12 +81,9 @@ export class AudioDispatcher {
             isAYoutubeSource = url.includes('youtube')
         }
 
-        // Is the file a local audio file or a temporary text to speech audio file?
-        // const isTTSFile: boolean = fileName.startsWith('tts_temp_audio')
-        // const filePath: string = isTTSFile === true ? `${fileName}` : `media/${fileName}.ogg`
         let filePath: string
-
         let audioFileSource: AudioFileSource
+
         if (fileName.startsWith('tts_temp_audio')) {
             audioFileSource = AudioFileSource.TTS_FILE
             filePath = `${fileName}`
@@ -141,7 +129,14 @@ export class AudioDispatcher {
                 break
 
             case AudioFileSource.YOUTUBE:
-                const resource_youtube = createAudioResource(await ytdl(filePath, { filter: 'audioonly' }))
+                const stream = await ytdl(filePath, { filter: 'audioonly' })
+                const resource_youtube = createAudioResource(stream)
+
+                console.log({
+                    info: 'AudioFileSource.YOUTUBE',
+                    stream: stream,
+                    resource_youtube: resource_youtube,
+                })
                 
                 this._player.play(resource_youtube)
 
@@ -160,6 +155,7 @@ export class AudioDispatcher {
         this._player.on(AudioPlayerStatus.Idle, (): void => {
             this.nextAudioClip(filePath)
             console.log(`Finished playing: ${fileName}`)
+            this._playingAudio = false
         })
 
         this._player.on('error', (error) => {
