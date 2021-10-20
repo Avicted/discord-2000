@@ -1,6 +1,6 @@
-import fs from 'fs'
+import fs, { createReadStream } from 'fs'
 import { StageChannel, VoiceChannel } from 'discord.js'
-import { AudioPlayer, AudioPlayerStatus, createAudioPlayer, getVoiceConnection, NoSubscriberBehavior, VoiceConnection } from '@discordjs/voice'
+import { AudioPlayer, AudioPlayerStatus, createAudioPlayer, getVoiceConnection, NoSubscriberBehavior, StreamType, VoiceConnection } from '@discordjs/voice'
 import { audioQueue } from './main'
 import { Queue } from './queue'
 import { AudioFileSource } from './enums/audioFileSource'
@@ -130,15 +130,14 @@ export class AudioDispatcher {
                     return
                 }
 
-                const resource_local = createAudioResource(filePath)
+                const resource_local = createAudioResource(
+                    createReadStream(filePath, {})
+                )
 
                 this._player.play(resource_local)
 
                 connection.subscribe(this._player)
 
-                /* this._player = connection.play(fs.createReadStream(filePath), {
-                    volume: this._main_volume,
-                }) */
                 break
 
             case AudioFileSource.YOUTUBE:
