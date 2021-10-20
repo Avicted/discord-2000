@@ -6,7 +6,7 @@ FROM mcr.microsoft.com/vscode/devcontainers/typescript-node:0-${VARIANT}
 
 # [Optional] Uncomment this section to install additional OS packages.
 RUN sudo apt-key adv --refresh-keys --keyserver keyserver.ubuntu.com && apt-get update && export DEBIAN_FRONTEND=noninteractive \
-     && apt-get -y install --no-install-recommends ffmpeg postgresql-client build-essential libssl-dev libffi-dev python3-dev python3-pip python3-setuptools
+     && apt-get -y install --no-install-recommends ffmpeg postgresql-client build-essential libssl-dev libffi-dev
 
 # [Optional] Uncomment if you want to install an additional version of node using nvm
 # ARG EXTRA_NODE_VERSION=10

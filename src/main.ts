@@ -3,7 +3,6 @@ import { Queue } from './queue'
 import { AudioDispatcher } from './audioDispatcher'
 import { checkTimezoneSettings, loadCommandFiles, loadEvents } from './utils'
 import 'reflect-metadata'
-import { createConnection } from 'typeorm'
 import { IAudioQueueEntry } from './interfaces/audioQueueEntry'
 import Discord from 'discord.js'
 import { ICommand } from './interfaces/command'
@@ -30,9 +29,6 @@ export const audioQueue: Queue<IAudioQueueEntry> = new Queue()
 // Global audio dispatcher for playing audio from the audioQueue
 export const audioDispatcher: AudioDispatcher = new AudioDispatcher()
 audioDispatcher.initialize()
-
-// Register a new database connection to the connectionManager
-createConnection()
 
 checkTimezoneSettings()
 loadCommandFiles()

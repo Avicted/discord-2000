@@ -4,8 +4,6 @@ import { ICommand } from '../interfaces/command'
 import { Queue } from '../queue'
 import { audioQueue } from '../main'
 import { getConnection } from 'typeorm'
-import { User } from '../persistence/entity/User'
-import { AudioCommand } from '../persistence/entity/AudioCommand'
 import { IAudioQueueEntry } from '../interfaces/audioQueueEntry'
 const prefix = process.env.CMD_PREFIX as string
 
@@ -54,27 +52,6 @@ module.exports = class Play implements ICommand {
 
             const queueEntry: IAudioQueueEntry = { title: fileName, voiceChannel: voiceChannel }
             this._audioQueue.push(queueEntry)
-
-            const userInDatabase = await getConnection()
-                .getRepository(User)
-                .createQueryBuilder('user')
-                .where('user.id = :id', { id: message.member.id })
-                .getOne()
-
-            if (userInDatabase) {
-                // Insert a new audio command from the user
-                await getConnection()
-                    .createQueryBuilder()
-                    .insert()
-                    .into(AudioCommand)
-                    .values([
-                        {
-                            user: userInDatabase,
-                            command: fileName,
-                        },
-                    ])
-                    .execute()
-            }
         } else {
             message.reply('You need to join a voice channel first!')
         }

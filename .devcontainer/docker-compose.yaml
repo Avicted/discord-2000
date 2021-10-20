@@ -30,22 +30,6 @@ services:
         # Overrides default command so things don't shut down after the process ends.
         command: /bin/sh -c "while sleep 1000; do :; done"
 
-    discord-2000-postgres:
-        container_name: 'discord-2000-postgres'
-        image: postgres:13.1
-        restart: unless-stopped
-        env_file:
-            - '../.env'
-        volumes:
-            - ${PWD}/postgres/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
-            - discord-2000-postgres-volume:/var/lib/postgresql/data
-        ports:
-            - 5432:5432
-        networks:
-            - discord-2000-private-net
-
-volumes:
-    discord-2000-postgres-volume:
 
 networks:
     discord-2000-private-net:

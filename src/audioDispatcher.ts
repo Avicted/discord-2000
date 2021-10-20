@@ -141,13 +141,7 @@ export class AudioDispatcher {
                 break
 
             case AudioFileSource.YOUTUBE:
-                const resource_youtube = createAudioResource(await ytdl(filePath))
-
-                this._player = createAudioPlayer({
-                    behaviors: {
-                        noSubscriber: NoSubscriberBehavior.Pause,
-                    }
-                })
+                const resource_youtube = createAudioResource(await ytdl(filePath, { filter: 'audioonly' }))
                 
                 this._player.play(resource_youtube)
 
