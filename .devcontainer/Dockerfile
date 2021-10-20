@@ -16,5 +16,5 @@ COPY /bin/wait-for-it.sh /usr/wait-for-it.sh
 RUN chmod +x /usr/wait-for-it.sh
 
 # [Optional] Uncomment if you want to install more global node packages
-RUN sudo -u node npm install typeorm ts-node -g
+RUN sudo -u node npm install ts-node -g
 

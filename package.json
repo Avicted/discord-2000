@@ -34,7 +34,7 @@
         "cleanup": "rm -rf ./dist",
         "compile": "npm run cleanup && tsc",
         "dev": "npm run cleanup && tsc-watch --onSuccess \"npm run start\"",
-        "start": "npm run compile && npm run typeorm:migrations && node dist/main.js"
+        "start": "npm run compile && node dist/main.js"
     },
     "author": "Victor Anderssén",
     "license": "MIT"

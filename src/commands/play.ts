@@ -3,7 +3,6 @@ import { Message, StageChannel, VoiceChannel } from 'discord.js'
 import { ICommand } from '../interfaces/command'
 import { Queue } from '../queue'
 import { audioQueue } from '../main'
-import { getConnection } from 'typeorm'
 import { IAudioQueueEntry } from '../interfaces/audioQueueEntry'
 const prefix = process.env.CMD_PREFIX as string
 

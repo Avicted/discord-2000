@@ -5,6 +5,8 @@ FROM node:16.11-buster as production
 RUN apt-key adv --refresh-keys --keyserver keyserver.ubuntu.com && apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends ffmpeg postgresql-client build-essential libssl-dev libffi-dev
 
+USER root
+RUN mkdir /app
 RUN chown -R node:node /app
 USER node
 
