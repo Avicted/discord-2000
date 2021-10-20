@@ -1,4 +1,4 @@
-import { Message, VoiceChannel } from 'discord.js'
+import { Message, StageChannel, VoiceChannel } from 'discord.js'
 import { ICommand } from '../interfaces/command'
 import { audioQueue } from '../main'
 import { Queue } from '../queue'
@@ -44,7 +44,7 @@ module.exports = class Youtube implements ICommand {
         console.log(`[Youtube execute] searchQuery: ${searchQuery}`)
 
         if (message.member?.voice.channel) {
-            const voiceChannel: VoiceChannel = message.member.voice.channel
+            const voiceChannel: VoiceChannel | StageChannel = message.member.voice.channel
 
             // Search youtube and try to find a video matching the searchQuery
 

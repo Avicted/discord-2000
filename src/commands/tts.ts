@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { Message, VoiceChannel } from 'discord.js'
+import { Message, StageChannel, VoiceChannel } from 'discord.js'
 import { ICommand } from '../interfaces/command'
 const prefix = process.env.CMD_PREFIX as string
 const ffmpeg = require('fluent-ffmpeg')
@@ -68,7 +68,7 @@ module.exports = class TTS implements ICommand {
         if (!message.guild) return
 
         if (message.member?.voice.channel) {
-            const voiceChannel: VoiceChannel = message.member.voice.channel
+            const voiceChannel: VoiceChannel | StageChannel = message.member.voice.channel
             await this.convertWavBytesToOpus(rawAudioData, message.createdTimestamp)
 
             const queueEntry: IAudioQueueEntry = {

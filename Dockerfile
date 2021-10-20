@@ -8,11 +8,11 @@ RUN apt-key adv --refresh-keys --keyserver keyserver.ubuntu.com && apt-get updat
 COPY /bin/wait-for-it.sh /usr/wait-for-it.sh
 RUN chmod +x /usr/wait-for-it.sh
 
-# set the working directory inside the image
-WORKDIR /app
-
 RUN chown -R node:node /app
 USER node
+
+# set the working directory inside the image
+WORKDIR /app
 
 # Arguments passed from .env -> docker-compose.yaml -> Dockerfile
 ARG TOKEN
@@ -28,6 +28,10 @@ COPY package-lock.json ./
 
 # copy all source code to the working directory
 COPY . ./
+
+USER root
+RUN chown -R node:node /app
+USER node
 
 # install dependencies
 RUN npm install

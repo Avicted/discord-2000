@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { Message, VoiceChannel } from 'discord.js'
+import { Message, StageChannel, VoiceChannel } from 'discord.js'
 import { ICommand } from '../interfaces/command'
 import { Queue } from '../queue'
 import { audioQueue } from '../main'
@@ -37,7 +37,7 @@ module.exports = class Play implements ICommand {
         const fileName: string = args[1].toLowerCase()
 
         if (message.member?.voice.channel) {
-            const voiceChannel: VoiceChannel = message.member.voice.channel
+            const voiceChannel: VoiceChannel | StageChannel = message.member.voice.channel
 
             // Check if the file exists?
             try {
