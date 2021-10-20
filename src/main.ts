@@ -9,7 +9,7 @@ const Discord = require('discord.js')
 export const client: Client = new Discord.Client({
     intents: [
         Intents.FLAGS.DIRECT_MESSAGES,
-        Intents.FLAGS.GUILD_PRESENCES,
+        // Intents.FLAGS.GUILD_PRESENCES,
         Intents.FLAGS.GUILD_VOICE_STATES,
     ],
 })
